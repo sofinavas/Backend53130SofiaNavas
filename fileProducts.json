@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "title": "Producto534",
+    "description": "Descripción de producto 534",
+    "price": 2000,
+    "thumbnail": "se actualiza?",
+    "code": "COD05",
+    "stock": 25
+  },
+  {
+    "id": 3,
+    "title": "Lemon Curd",
+    "description": "Tarta de crema de lima",
+    "price": 9000,
+    "thumbnail": "sin imagen",
+    "code": "COD13",
+    "stock": 10
+  },
+  {
+    "id": 4,
+    "title": "Producto1",
+    "description": "Descripción de producto 1",
+    "price": 1500,
+    "thumbnail": "sin imagen",
+    "code": "COD01",
+    "stock": 25
+  },
+  {
+    "id": 5,
+    "title": "Producto2",
+    "description": "Descripción de producto 2",
+    "price": 1800,
+    "thumbnail": "sin imagen",
+    "code": "COD02",
+    "stock": 25
+  },
+  {
+    "id": 6,
+    "title": "Producto3",
+    "description": "Descripción de producto 3",
+    "price": 500,
+    "thumbnail": "sin imagen",
+    "code": "COD03",
+    "stock": 25
+  },
+  {
+    "id": 7,
+    "title": "Producto4",
+    "description": "Descripción de producto 4",
+    "price": 2000,
+    "thumbnail": "sin imagen",
+    "code": "COD04",
+    "stock": 25
+  },
+  {
+    "id": 8,
+    "title": "Producto5",
+    "description": "Descripción de producto 5",
+    "price": 1900,
+    "thumbnail": "sin imagen",
+    "code": "COD05",
+    "stock": 25
+  },
+  {
+    "id": 9,
+    "title": "Producto6",
+    "description": "Descripción de producto 6",
+    "price": 780,
+    "thumbnail": "sin imagen",
+    "code": "COD06",
+    "stock": 25
+  },
+  {
+    "id": 10,
+    "title": "Producto7",
+    "description": "Descripción de producto 7",
+    "price": 920,
+    "thumbnail": "sin imagen",
+    "code": "COD07",
+    "stock": 25
+  },
+  {
+    "id": 11,
+    "title": "Producto8",
+    "description": "Descripción de producto 8",
+    "price": 4000,
+    "thumbnail": "sin imagen",
+    "code": "COD08",
+    "stock": 25
+  },
+  {
+    "id": 12,
+    "title": "Producto9",
+    "description": "Descripción de producto 9",
+    "price": 1560,
+    "thumbnail": "sin imagen",
+    "code": "COD09",
+    "stock": 25
+  },
+  {
+    "id": 13,
+    "title": "Producto10",
+    "description": "Descripción de producto 10",
+    "price": 570,
+    "thumbnail": "sin imagen",
+    "code": "COD10",
+    "stock": 25
+  }
+]",
+    "stock": 25
+  },
+  {
+    "id": 13,
+    "title": "Producto10",
+    "description": "Descripción de producto 10",
+    "price": 570,
+    "thumbnail": "sin imagen",
+    "code": "COD10",
+    "stock": 25
+  }
+]
