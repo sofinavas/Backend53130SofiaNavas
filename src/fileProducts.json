@@ -1,42 +1,15 @@
 [
   {
     "id": 1,
-    "title": "Fragile",
-    "description": "Base brownie con nueces, dulce de leche, merengue de cacao y almendras tostadas, ganache de chocolate, mousse de chocolate, merengue italiano de cacao y trufas",
-    "price": 40000,
-    "thumbnail": "sin imagen",
-    "code": "TO11",
-    "stock": 20
-  },
-  {
-    "id": 2,
-    "title": "Marquise",
-    "description": "base de chocolate, relleno de dulce de leche, crema y merengue",
-    "price": 12000,
-    "thumbnail": "sin imagen",
-    "code": "COD12",
-    "stock": 10
-  },
-  {
-    "id": 3,
-    "title": "Imperial Ruso",
-    "description": "Merengue, dulce de leche, crema chantilly y pionono.",
-    "price": 18000,
-    "thumbnail": "sin imagen",
-    "code": "TO13",
-    "stock": 10
-  },
-  {
-    "id": 4,
     "title": "Tiramisu",
     "description": "Vainillas embebidas en almíbar de café y coñac con suave crema de queso, espolvoreado con cacao amargo.",
     "price": 24000,
     "thumbnail": "sin imagen",
     "code": "TO01",
-    "stock": 25
+    " stock": 25
   },
   {
-    "id": 5,
+    "id": 2,
     "title": "Milhojas",
     "description": "Milhojas de dulce de leche cubierta con merengue italiano.",
     "price": 32000,
@@ -45,7 +18,7 @@
     "stock": 25
   },
   {
-    "id": 6,
+    "id": 3,
     "title": "Cheesecake",
     "description": "Base de galletitas molidas, crema de queso blanco y mermelada de frutos rojos.",
     "price": 18000,
@@ -54,7 +27,7 @@
     "stock": 25
   },
   {
-    "id": 7,
+    "id": 4,
     "title": "Chajá",
     "description": "Bizcochuelo de vainilla humedecido con almíbar de Oporto, crema chantillí, duraznos, dulce de leche y merengue partido.",
     "price": 33000,
@@ -63,7 +36,7 @@
     "stock": 25
   },
   {
-    "id": 8,
+    "id": 5,
     "title": "Semi desnuda (NAKED)",
     "description": "Bizcochuelo de vainilla o chocolate humedecidos con almíbar.Las tortas pueden tener de 2 a 3 cortes según el tamaño.  Los rellenos pueden ser: dulce de leche, ganache de chocolate, mousse de dulce de leche, mousse de chocolate, crema chantilly, crema moka.  Fruta según la estación: frutillas, duraznos, etc. Fruta seca: almendras tostadas, nueces, avellanas, castañas de cajú. Merenguitos, merengue de cacao, merengue de coco, chips de chocolate, galletitas oreo. La cubierta es de buttercream (crema a base de manteca y merengue italiano.  El tamaño más chico es de 1.5kg. El precio es por kilo",
     "price": 21000,
@@ -72,7 +45,7 @@
     "stock": 25
   },
   {
-    "id": 9,
+    "id": 6,
     "title": "Concorde",
     "description": "Discos de merengue de cacao y mousse de chocolate con leche cubierta con bastoncitos de merengue de cacao. ",
     "price": 33000,
@@ -81,7 +54,7 @@
     "stock": 25
   },
   {
-    "id": 10,
+    "id": 7,
     "title": "Chocotorta",
     "description": "Galletitas chocolinas con crema de dulce de leche y queso blanco, decorada con virutas de chocolate.",
     "price": 21000,
@@ -90,7 +63,7 @@
     "stock": 25
   },
   {
-    "id": 11,
+    "id": 8,
     "title": "Marquise",
     "description": "Base húmeda de chocolate, dulce de leche, crema y merengue italiano.",
     "price": 30000,
@@ -99,7 +72,7 @@
     "stock": 25
   },
   {
-    "id": 12,
+    "id": 9,
     "title": "Torta BUTTERCREAM",
     "description": "Bizcochuelo de vainilla o chocolate humedecidos con almíbar. Las tortas pueden tener de 2 a 3 cortes según el tamaño.  Los rellenos pueden ser: dulce de leche, ganache de chocolate, mousse de dulce de leche, mousse de chocolate, crema chantilly, crema moka.  Fruta según la estación: frutillas, duraznos, etc. Fruta seca: almendras tostadas, nueces, avellanas, castañas de cajú. Merenguitos, merengue de cacao, merengue de coco, chips de chocolate, galletitas oreo. La cubierta es de buttercream de color.  El tamaño más chico es de 1.5kg. El precio es por kilo",
     "price": 25000,
@@ -108,7 +81,7 @@
     "stock": 25
   },
   {
-    "id": 13,
+    "id": 10,
     "title": "Selva Negra",
     "description": "Bizcochuelo de chocolate húmedo do con almíbar de kirch, crema chantilly, cerezas al marraschino y virutas de chocolate.",
     "price": 21000,
