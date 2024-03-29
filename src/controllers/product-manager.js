@@ -68,6 +68,15 @@ class ProductManager {
       throw error;
     }
   }
+  async getProducts() {
+    try {
+      const arrayProductos = await this.leerArchivo();
+      return arrayProductos;
+    } catch (error) {
+      console.log("Errror al leer el archivo", error);
+      throw error;
+    }
+  }
   //Con el método getProductById(id) busco un producto por su ID en la lista de productos. Tomo como argumento el ID del producto que se está buscando y utilizo el método find() para buscar un producto con ese ID en la lista de productos.
 
   async getProductById() {
