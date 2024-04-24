@@ -19,5 +19,8 @@ router.get("/", async (req, res) => {
 router.get("/realtimeproducts", (req, res) => {
   res.render("realtimeproducts");
 });
+router.get("/", async (req, res) => {
+  res.render("chat");
+});
 
 module.exports = router;

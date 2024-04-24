@@ -1,0 +1,16 @@
+<h1>Bienvenidos al Chat</h1>
+{{! preparo una plantilla para recibir los mensajes y mostrar después el chat completo }}
+<div>
+  <input type="text" name="" id="chatBox" />
+</div>
+
+{{! Sección para ver los mensajes del chat }}
+
+<div>
+  <p id="messagesLogs">
+
+  </p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/main.js"></script>
