@@ -23,8 +23,8 @@ app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
 //Rutas
-app.use("/api", productsRouter);
-app.use("/api", cartsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
 //Y nunca nos olvidemos del listen...
@@ -36,10 +36,10 @@ const httpServer = app.listen(PUERTO, () => {
 const io = socket(httpServer);
 
 //Obtengo el array de productos:
-const ProductManager = require("./controllers/product-manager.js");
+// const ProductManager = require("./controllers/product-manager.js");
 
-//genero una instancia
-const productManager = new ProductManager("./src/models/productos.json");
+// //genero una instancia
+// const productManager = new ProductManager("./src/models/productos.json");
 
 //genero la conexión:
 io.on("connection", async (socket) => {

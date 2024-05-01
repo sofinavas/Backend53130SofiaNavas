@@ -5,23 +5,44 @@ const ProductManager = require("../controllers/product-manager.js");
 const productManager = new ProductManager();
 
 //Listar todos los productos:
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const limit = req.query.limit;
-    const productos = await productManager.getProducts();
-    if (limit) {
-      res.json(productos.slice(0, limit));
-    } else {
-      res.json(productos);
-    }
+    const { limit = 10, page = 1, sort, query } = req.query;
+
+    const productos = await productManager.getProducts({
+      limit: parseInt(limit),
+      page: parseInt(page),
+      sort,
+      query,
+    });
+
+    res.json({
+      status: "success",
+      payload: productos,
+      totalPages: productos.totalPages,
+      prevPage: productos.prevPage,
+      nextPage: productos.nextPage,
+      page: productos.page,
+      hasPrevPage: productos.hasPrevPage,
+      hasNextPage: productos.hasNextPage,
+      prevLink: productos.hasPrevPage
+        ? `/api/products?limit=${limit}&page=${productos.prevPage}&sort=${sort}&query=${query}`
+        : null,
+      nextLink: productos.hasNextPage
+        ? `/api/products?limit=${limit}&page=${productos.nextPage}&sort=${sort}&query=${query}`
+        : null,
+    });
   } catch (error) {
-    console.error("Error al obtener productos, error");
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al obtener productos", error);
+    res.status(500).json({
+      status: "error",
+      error: "Error interno del servidor",
+    });
   }
 });
 
 //Obtener un producto por id:
-router.get("/products/:pid", async (req, res) => {
+router.get("/:pid", async (req, res) => {
   const id = req.params.pid;
   try {
     //Obtener el producto por su ID del ProductManager
@@ -40,7 +61,7 @@ router.get("/products/:pid", async (req, res) => {
 
 //Agregar un nuevo producto
 
-router.post("/products", async (req, res) => {
+router.post("/", async (req, res) => {
   const nuevoProducto = req.body;
 
   try {
