@@ -1,4 +1,4 @@
-const productModel = require("../models/product.model.js");
+const ProductModel = require("../models/product.model.js");
 
 //Defino la clase ProductManager
 class ProductManager {

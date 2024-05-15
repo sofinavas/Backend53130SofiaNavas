@@ -23,6 +23,7 @@ router.get("/products", async (req, res) => {
     });
 
     res.render("products", {
+      user: req.session.user,
       productos: nuevoArray,
       hasPrevPage: productos.hasPrevPage,
       hasNextPage: productos.hasNextPage,
@@ -62,6 +63,33 @@ router.get("/carts/:cid", async (req, res) => {
     console.error("Error al obtener el carrito", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
+});
+
+router.get("/login", (req, res) => {
+  //Verifico que el user esta logueado y redirige a la pagina de perfil
+  if (req.session.login) {
+    return res.redirect("/products");
+  }
+
+  res.render("/login");
+});
+
+//Ruta para el formulario de registro:
+router.get("/register", (req, res) => {
+  if (req.session.login) {
+    return res.redirect("/profile");
+  }
+  res.render("register");
+});
+
+//Ruta para la vista de perfil:
+router.get("/profile", (req, res) => {
+  if (!req.session.login) {
+    return res.redirect("/login");
+  }
+
+  //Renderizo la vista de perfil con los datos del user
+  res.render("profile", { user: req.session.user });
 });
 
 router.get("/realtimeproducts", (req, res) => {

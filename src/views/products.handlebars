@@ -1,3 +1,13 @@
+{{#if user}}
+  <header>
+    <p>Bienvenido!, {{user.first_name}} {{user.last_name}} !</p>
+    <p>Rol: {{user.role}} </p>
+    <a href="/api/sessions/logout"></a>
+  </header>
+{{/if}}
+
+<hr />
+
 <h1> Productos </h1>
 {{#each productos}}
   <div>
