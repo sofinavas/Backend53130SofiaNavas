@@ -71,7 +71,7 @@ router.get("/login", (req, res) => {
     return res.redirect("/products");
   }
 
-  res.render("/login");
+  res.render("login");
 });
 
 //Ruta para el formulario de registro:
