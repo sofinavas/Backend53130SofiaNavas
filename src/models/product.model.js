@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const productSchema = new mongoose.Schema({
   title: {
@@ -37,7 +38,8 @@ const productSchema = new mongoose.Schema({
     type: [String],
   },
 });
+productSchema.plugin(mongoosePaginate);
 
 const ProductModel = mongoose.model("Product", productSchema);
-
+//El modelo (ProductModel) se utilizará para interactuar con la colección products en mi base de datos MongoDB. Mongoose pluraliza y minúscula el nombre del modelo para crear el nombre de la colección
 module.exports = ProductModel;

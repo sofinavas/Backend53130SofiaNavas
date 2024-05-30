@@ -1,6 +1,6 @@
 const CartModel = require("../models/cart.model.js");
 
-class CartManager {
+class CartRepository {
   async crearCarrito() {
     try {
       const nuevoCarrito = new CartModel({ products: [] });
@@ -25,6 +25,7 @@ class CartManager {
       throw error;
     }
   }
+
   async agregarProductoAlCarrito(cartId, productId, quantity = 1) {
     try {
       const carrito = await this.getCarritoById(cartId);
@@ -36,7 +37,7 @@ class CartManager {
       } else {
         carrito.products.push({ product: productId, quantity });
       }
-      carrito.markModified("products");
+      carrito.markModified("products"); //Marca el array products como modificado para que Mongoose sepa que debe actualizar este campo en la base de datos.
 
       await carrito.save();
       return carrito;
@@ -65,6 +66,7 @@ class CartManager {
       throw error;
     }
   }
+
   async actualizarCarrito(cartId, updatedProducts) {
     try {
       const cart = await CartModel.findById(cartId);
@@ -85,6 +87,7 @@ class CartManager {
       throw error;
     }
   }
+
   async actualizarCantidadDeProducto(cartId, productId, newQuantity) {
     try {
       const cart = await CartModel.findById(cartId);
@@ -115,7 +118,6 @@ class CartManager {
       throw error;
     }
   }
-
   async vaciarCarrito(cartId) {
     try {
       const cart = await CartModel.findByIdAndUpdate(
@@ -135,4 +137,4 @@ class CartManager {
     }
   }
 }
-module.exports = CartManager;
+module.exports = CartRepository;

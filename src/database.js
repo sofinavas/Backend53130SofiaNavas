@@ -2,7 +2,7 @@
 //Traigo mongoose y utilizo el método connect
 const mongoose = require("mongoose");
 
-//Creo la conexión a la BD
+//Creo la conexión a la BD con mi contraseña "sofianavasd" y el nombre de la coleccion "E-commerce"
 
 mongoose
   .connect(
