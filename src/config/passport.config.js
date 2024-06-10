@@ -2,8 +2,11 @@ const passport = require("passport");
 const jwt = require("passport-jwt");
 const JWTStrategy = jwt.Strategy;
 const ExtractJwt = jwt.ExtractJwt;
-const GitHubStrategy = require("passport-github2");
+
 const UserModel = require("../models/user.model.js");
+
+const GitHubStrategy = require("passport-github2");
+const configObject = require("./config.js");
 
 // Crea el extractor de cookies:
 const cookieExtractor = (req) => {
@@ -22,7 +25,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: "my_secret_jwt",
+        secretOrKey: configObject.secret,
       },
       async (jwt_payload, done) => {
         try {
@@ -43,9 +46,9 @@ const initializePassport = () => {
     "github",
     new GitHubStrategy(
       {
-        clientID: "Iv23liGXYtmbZnDPzI32",
-        clientSecret: "62b6f9fe667ae5476ec65a58d685ae3f4bfd910c",
-        callbackURL: "http://localhost:8080/api/sessions/githubcallback",
+        clientID: configObject.clientID,
+        clientSecret: configObject.clientSecret,
+        callbackURL: configObject.callbackURL,
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log("Profile:", profile);

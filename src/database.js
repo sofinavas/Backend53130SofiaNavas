@@ -1,12 +1,9 @@
 //Acá hago la conexión con MONGODB:
-//Traigo mongoose y utilizo el método connect
-const mongoose = require("mongoose");
 
-//Creo la conexión a la BD con mi contraseña "sofianavasd" y el nombre de la coleccion "E-commerce"
+const mongoose = require("mongoose");
+const configObject = require("./config/config.js");
 
 mongoose
-  .connect(
-    "mongodb+srv://sofianavasd:sofianavasd@cluster0.zdkrisu.mongodb.net/E-commerce?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(() => console.log("Conexion exitosa"))
-  .catch((error) => console.log("Error en la conexion", error));
+  .connect(configObject.mongoURL)
+  .then(() => console.log("Conexion exitosa a MongoDB"))
+  .catch((error) => console.log("Error en la conexion con MongoDB", error));
