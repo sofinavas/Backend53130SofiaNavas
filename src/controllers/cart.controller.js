@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
+const ProductRepository = require("../repositories/product.repository.js");
 
 const cartRepository = new CartRepository();
 // const ProductRepository = require("../repositories/product.repository.js");
@@ -138,6 +139,54 @@ class CartController {
       });
     } catch (error) {
       console.error("Error al vaciar el carrito", error);
+      res.status(500).json({
+        status: "error",
+        error: "Error interno del servidor",
+      });
+    }
+  }
+  async finalizarCompra(req, res) {
+    const cartId = req.params.cid;
+    try {
+      //Obtengo el carrito y sus productos
+      const cart = await cartRepository.obtenerCarrito(cartId);
+      const products = cart.products;
+
+      //Inicializar una arreglo para almacenar los productos no disponibles
+      const notAvailableProducts = [];
+
+      //Verificar el stock y actualizar los productos disponibles
+      for (const item of products) {
+        const productId = item.product;
+        const product = await ProductRepository.obtenerProductoPorId(productId);
+        if (product.stock < item.quantity) {
+          //si hay suficiente stock, restar la cantidad del producto
+          product.stock -= item.quantity;
+          await product.save();
+        } else {
+          notAvailableProducts.push(productId);
+        }
+      }
+      const userWithCart = await UserModel.findOne({ cart: cartId });
+      //Crear un ticket con los datos de la compra
+      const ticket = new TicketModel({
+        code: generateUniqueCode(),
+        purchase_datetime: new Date(),
+        amount: calcularTotal(cart.products),
+        purchaser: userWithCart._id,
+      });
+      await ticket.save();
+      //Eliminar el carrito los productos que si se compraron:
+      cart.products = cart.products.filter((item) =>
+        notAvailableProducts.some(productId.equals(item.product))
+      );
+      //Guardar el carrito actualizado en la BD
+      await cart.save();
+      res.status(200).json({ notAvailableProducts });
+      await cartRepository.vaciarCarrito(cartId);
+      res.json({ ticket });
+    } catch (error) {
+      console.error("Error al finalizar la compra", error);
       res.status(500).json({
         status: "error",
         error: "Error interno del servidor",

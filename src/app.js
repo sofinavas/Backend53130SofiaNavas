@@ -57,3 +57,5 @@ const httpServer = app.listen(PUERTO, () => {
 //Websockets:
 const SocketManager = require("./sockets/socketmanager.js");
 new SocketManager(httpServer);
+
+//Contraseña para aplicaciones: tpmg gqja agpk deqt

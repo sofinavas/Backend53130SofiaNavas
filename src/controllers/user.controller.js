@@ -3,7 +3,7 @@ const CartModel = require("../models/cart.model.js");
 const jwt = require("jsonwebtoken");
 const { createHash, isValidPassword } = require("../utils/hashbcryp.js");
 
-class UserManager {
+class UserController {
   async register(req, res) {
     const { first_name, last_name, email, password, age } = req.body;
     try {
@@ -14,7 +14,6 @@ class UserManager {
           .send("Ya existe un usuario registrado con ese email");
       }
 
-      //Creo un nuevo carrito:
       const newCart = new CartModel();
       await newCart.save();
 
@@ -33,12 +32,13 @@ class UserManager {
       });
 
       res.cookie("cookieToken", token, { maxAge: 3600000, httpOnly: true });
-      res.redirect("api/users/profile");
+      res.redirect("/api/users/profile");
     } catch (error) {
-      console.log(error);
+      console.error("Error en register:", error);
       res.status(500).send("Error interno del servidor en el userManager");
     }
   }
+
   async login(req, res) {
     const { email, password } = req.body;
     try {
@@ -59,25 +59,38 @@ class UserManager {
       });
 
       res.cookie("cookieToken", token, { maxAge: 3600000, httpOnly: true });
-      res.redirect("api/users/profile");
+      res.redirect("/api/users/profile");
     } catch (error) {
-      console.log(error);
+      console.error("Error en login:", error);
       res.status(500).send("Error interno del servidor en el userManager");
     }
   }
+  async profile(req, res) {
+    const userDto = new UserDto(
+      req.user.first_name,
+      req.user.last_name,
+      req.user.role
+    );
+    const isAdmin = req.user.role === "admin";
+    res.render("profile", { user: userDto, isAdmin });
+  }
+
   async logout(req, res) {
     res.clearCookie("cookieToken");
     res.redirect("/login");
   }
+
   async admin(req, res) {
     if (req.user.user.role !== "admin") {
-      return res.status(403).send("Denied acces");
+      return res.status(403).send("Denied access");
     }
     res.render("admin");
   }
+
   async githubAuth(req, res) {
     passport.authenticate("github", { scope: ["user:email"] })(req, res);
   }
+
   async githubCallBack(req, res) {
     passport.authenticate("github", { failureRedirect: "/login" })(
       req,
@@ -90,4 +103,5 @@ class UserManager {
     );
   }
 }
-module.exports = UserManager;
+
+module.exports = UserController;
