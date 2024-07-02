@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
@@ -7,55 +7,58 @@ const initializePassport = require("./config/passport.config.js");
 const cors = require("cors");
 const path = require("path");
 const authMiddleware = require("./middleware/authmiddleware.js");
-const PUERTO = 8080;
+const mongoose = require("mongoose");
+const config = require("./config/config");
 
-//const session = require("express-session");
-//const MongoStore = require("connect-mongo");
+const app = express();
 
-//me conecto
-require("./database.js");
+// Conectando a MongoDB
+mongoose
+  .connect(config.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Conexión exitosa a MongoDB"))
+  .catch((error) => console.error("Error en la conexión a MongoDB", error));
 
-//Traigo las rutas de las vistas, productos y carritos
+// Configurando Handlebars
+app.engine("handlebars", exphbs());
+app.set("view engine", "handlebars");
+app.set("views", path.join(__dirname, "views"));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(authMiddleware);
+
+// Rutas
 const viewsRouter = require("./routes/views.router.js");
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const userRouter = require("./routes/user.router.js");
 
-//Middleware
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "../public")));
-app.use(cors());
-app.use(cookieParser());
-
-//Passport
-
-initializePassport();
-app.use(passport.initialize());
-
-//AuthMiddleware
-
-//Configuro Handlebars
-
-app.engine("handlebars", exphbs.engine());
-app.set("view engine", "handlebars");
-app.set("views", "./src/views");
-
-//Rutas
-app.use("/api/products", authMiddleware, productsRouter);
-app.use("/api/carts", authMiddleware, cartsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 app.use("/api/users", userRouter);
 app.use("/", viewsRouter);
 
-//Y nunca nos olvidemos del listen...
+// Manejo de errores
+app.use(require("./services/errors/info.js"));
 
-const httpServer = app.listen(PUERTO, () => {
-  console.log(`Escuchando en el puerto ${PUERTO}`);
+// Escuchando en el puerto configurado
+const PORT = config.PORT || 8080;
+const server = app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-//Websockets:
+// Websockets
 const SocketManager = require("./sockets/socketmanager.js");
-new SocketManager(httpServer);
+new SocketManager(server);
+
+module.exports = app;
 
 //Contraseña para aplicaciones: tpmg gqja agpk deqt

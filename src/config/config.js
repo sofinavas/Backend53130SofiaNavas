@@ -8,12 +8,12 @@ dotenv.config({
 
 const configObject = {
   PORT: process.env.PORT,
-  mongoURL: process.env.MONGO_URL,
-  clientID: process.env.CLIENTID,
-  clientSecret: process.env.CLIENTSECRET,
-  callbackURL: process.env.CALLBACKURL,
-  secret: process.env.SECRETMONGO,
-  estado: process.env.ESTADO,
+  MONGO_URL: process.env.MONGO_URL,
+  CLIENTID: process.env.CLIENTID,
+  CLIENTSECRET: process.env.CLIENTSECRET,
+  CALLBACKURL: process.env.CALLBACKURL,
+  SECRETMONGO: process.env.SECRETMONGO,
+  ESTADO: process.env.ESTADO,
 };
 
 module.exports = configObject;

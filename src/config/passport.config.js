@@ -4,7 +4,6 @@ const JWTStrategy = jwt.Strategy;
 const ExtractJwt = jwt.ExtractJwt;
 
 const UserModel = require("../models/user.model.js");
-
 const GitHubStrategy = require("passport-github2");
 const configObject = require("./config.js");
 
@@ -60,7 +59,7 @@ const initializePassport = () => {
               last_name: "",
               age: "",
               email: profile._json.email,
-              password: "",
+              password: "", // Aquí deberías manejar mejor la creación de usuarios desde GitHub
             };
             let result = await UserModel.create(newUser);
             return done(null, result);
