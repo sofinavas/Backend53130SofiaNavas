@@ -1,4 +1,4 @@
-import errorDictionary from "./enum.js";
+const errorDictionary = require("./custom-error.js");
 
 function errorHandler(err, req, res, next) {
   console.log("errorHandler", err);
@@ -9,4 +9,5 @@ function errorHandler(err, req, res, next) {
     res.status(500).send("Internal Server Error");
   }
 }
+
 module.exports = errorHandler;

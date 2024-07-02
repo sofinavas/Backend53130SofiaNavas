@@ -24,7 +24,7 @@ const initializePassport = () => {
     new JWTStrategy(
       {
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: configObject.secret,
+        secretOrKey: configObject.SECRETMONGO,
       },
       async (jwt_payload, done) => {
         try {
@@ -45,9 +45,9 @@ const initializePassport = () => {
     "github",
     new GitHubStrategy(
       {
-        clientID: configObject.clientID,
-        clientSecret: configObject.clientSecret,
-        callbackURL: configObject.callbackURL,
+        clientID: configObject.CLIENTID,
+        clientSecret: configObject.CLIENTSECRET,
+        callbackURL: configObject.CALLBACKURL,
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log("Profile:", profile);

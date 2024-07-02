@@ -22,7 +22,7 @@ mongoose
   .catch((error) => console.error("Error en la conexión a MongoDB", error));
 
 // Configurando Handlebars
-app.engine("handlebars", exphbs());
+app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use(cookieParser());
 app.use(passport.initialize());
+initializePassport();
 app.use(authMiddleware);
 
 // Rutas
