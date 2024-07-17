@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const userSchema = mongoose.Schema({
   first_name: {
     type: String,
@@ -7,7 +8,7 @@ const userSchema = mongoose.Schema({
 
   last_name: {
     type: String,
-    //required: true,
+    required: true,
   },
 
   email: {
@@ -19,20 +20,28 @@ const userSchema = mongoose.Schema({
 
   password: {
     type: String,
-    //required: true,
+    //required: true
+  },
+
+  age: {
+    type: Number,
+    required: true,
   },
   cart: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Cart",
-    required: true,
   },
-
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ["admin", "usuario", "premium"],
+    default: "usuario",
+  },
+  resetToken: {
+    token: String,
+    expire: Date,
   },
 });
-const UserModel = mongoose.model("user", userSchema);
+
+const UserModel = mongoose.model("users", userSchema);
 
 module.exports = UserModel;

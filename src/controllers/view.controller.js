@@ -95,5 +95,15 @@ class ViewsController {
   async renderChat(req, res) {
     res.render("chat");
   }
+
+  async renderResetPassword(req, res) {
+    res.render("passwordreset");
+  }
+  async renderChangePassword(req, res) {
+    res.render("changepassword");
+  }
+  async renderConfirm(req, res) {
+    res.render("confirmacion-envio");
+  }
 }
 module.exports = ViewsController;

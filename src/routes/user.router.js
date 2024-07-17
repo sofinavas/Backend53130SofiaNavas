@@ -31,7 +31,17 @@ router.get(
 router.get("/github", userController.githubAuth.bind(userController));
 router.get(
   "/githubcallback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
   userController.githubCallBack.bind(userController)
+);
+
+router.post(
+  "/requestPasswordReset",
+  userController.requestPasswordReset.bind(userController)
+);
+router.post(
+  "/reset-password",
+  userController.resetPassword.bind(userController)
 );
 
 module.exports = router;

@@ -18,44 +18,46 @@ class EmailManager {
         from: "<sofianavasd@gmail.com>",
         to: email,
         subject: "Confirmacion de compra",
-        html: (
+        html: `
           <div>
             <h1>Confirmación de compra</h1>
             <p>Hola ${first_name}. Gracias por tu compra!</p>
             <p>Tu ticket es: ${ticket}</p>
           </div>
-        ),
+        `,
       };
       await this.transporter.sendMail(mailOptions);
     } catch (error) {
       console.error("Error al enviar el correo:", error);
     }
   }
+
   async enviarCorreoRestablecimiento(email, first_name, token) {
     try {
       const mailOptions = {
         from: "<sofianavasd@gmail.com>",
         to: email,
         subject: "Restablecer contraseña",
-        html: (
+        html: `
           <div>
             <h1>Restablecer contraseña</h1>
             <p>
-              Hola ${first_name}. Haz click en el siguiente enlace para
-              restablecer tu contraseña:
+              Hola ${first_name}. El código de confirmación para restablecer tu
+              contraseña es: <strong>${token}</strong>
             </p>
             <p>
-              <a href="http://localhost:8080/api/users/resetpassword/${token}">
+              <a href="http://localhost:8080/password">
                 Restablecer contraseña
               </a>
             </p>
           </div>
-        ),
+        `,
       };
       await this.transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error("Error al enviar el correo:", error);
+      console.error("Error al enviar el correo de recuperación:", error);
     }
   }
 }
+
 module.exports = EmailManager;

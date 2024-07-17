@@ -1,12 +1,14 @@
 <h1>Login</h1>
-<form action="/api/sessions/login" method="POST">
+<form class="form" action="/api/users/login" method="POST">
   <label for="email">Email: </label>
-  <input type="email" name="email" id="email" required />
-  <br />
+  <input type="email" class="input" name="email" id="email" required />
+
   <label for="password">Password: </label>
-  <input type="password" name="password" id="password" required />
-  <br />
-  <button type="submit">Login</button>
-  <button type="submit">Register</button>
+  <input type="text" class="input" name="password" id="password" required />
+
+  <button type="submit" class="btn">Login</button>
+
+  <p>Forgot Password?<a href="/reset-password">Reset Password</a> </p>
+
+  <a href="/api/users/github">Entrar con Github</a>
 </form>
-<a href="/api/sessions/github">Entrar con Github</a>

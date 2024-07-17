@@ -23,4 +23,7 @@ router.get(
 router.get("/chat", checkUserRole(["usuario"]), viewsController.renderChat);
 router.get("/", viewsController.renderHome);
 
+router.get("/resetpassword", viewsController.renderResetPassword);
+router.get("/changepassword", viewsController.renderChangePassword);
+router.get("/confirm", viewsController.renderConfirm);
 module.exports = router;
