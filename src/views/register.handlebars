@@ -1,37 +1,20 @@
-<h1>Registrarse</h1>
-<form class="formulario" action="/api/users/register" method="post">
-  <label for="first_name">Nombre:</label>
-  <input
-    type="text"
-    class="inputMessi"
-    id="first_name"
-    name="first_name"
-    required
-  />
-
-  <label for="last_name">Apellido:</label>
-  <input
-    type="text"
-    class="inputMessi"
-    id="last_name"
-    name="last_name"
-    required
-  />
-
-  <label for="email">Email:</label>
-  <input type="email" class="inputMessi" id="email" name="email" required />
-
-  <label for="password">Contraseña:</label>
-  <input
-    type="password"
-    class="inputMessi"
-    id="password"
-    name="password"
-    required
-  />
-
-  <label for="age">Edad:</label>
-  <input type="number" class="inputMessi" id="age" name="age" required />
-
-  <button class="btnMios" type="submit">Register</button>
+<h1>registro</h1>
+<form action="/api/users" method="post">
+  <label for="first_name">first name</label>
+  <input type="text" placeholder="first_name" name="first_name" required />
+  <br />
+  <label for="last_name">last name</label>
+  <input type="text" placeholder="last_name" name="last_name" required />
+  <br />
+  <label for="email">email</label>
+  <input type="email" placeholder="email" name="email" required />
+  <br />
+  <label for="password">password</label>
+  <input type="password" placeholder="password" name="password" required />
+  <br />
+  <label for="age"> Age</label>
+  <input type="text" placeholder="age" name="age" required />
+  <br />
+  <button type="submit">register</button>
+  <p>Ya tenes cuenta?<a href="/login">Login</a></p>
 </form>

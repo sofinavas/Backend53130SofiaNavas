@@ -8,7 +8,7 @@
         <p class="card-text">Cantidad: {{this.quantity}}</p>
         <p class="card-text">Precio: ${{this.product.totalPrice}}</p>
         <button
-          onclick="eliminarProducto('{{this.cartId}}', '{{this.product._id}}')"
+          onclick="eliminarProducto('{{cartId}}', '{{this.product._id}}')"
           class="btn btn-danger"
         >Eliminar</button>
       </div>
@@ -24,14 +24,17 @@
   <button type="submit" class="btn btn-success">Finalizar Compra</button>
 </form>
 
-{{! Organizar en un módulo en PUBLIC/JS }}
 <script>
   function eliminarProducto(cartId, productId) {
-  fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'DELETE' })
-  .then(response => { if (!response.ok) { throw new Error('Error al eliminar el
-  producto del carrito'); } location.reload(); }) .catch(error => {
+  fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'DELETE',
+  headers: { 'Content-Type': 'application/json' } }) .then(response => { if
+  (!response.ok) { throw new Error('Error al eliminar el producto del carrito');
+  } return response.json(); }) .then(data => { console.log('Producto
+  eliminado:', data); location.reload(); }) .catch(error => {
   console.error('Error:', error); }); } function vaciarCarrito(cartId) {
-  fetch(`/api/carts/${cartId}`, { method: 'DELETE' }) .then(response => { if
-  (!response.ok) { throw new Error('Error al vaciar el carrito'); }
-  location.reload(); }) .catch(error => { console.error('Error:', error); }); }
+  fetch(`/api/carts/${cartId}`, { method: 'DELETE', headers: { 'Content-Type':
+  'application/json' } }) .then(response => { if (!response.ok) { throw new
+  Error('Error al vaciar el carrito'); } return response.json(); }) .then(data
+  => { console.log('Carrito vaciado:', data); location.reload(); }) .catch(error
+  => { console.error('Error:', error); }); }
 </script>

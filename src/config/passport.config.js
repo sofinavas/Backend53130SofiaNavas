@@ -1,38 +1,76 @@
-const passport = require("passport");
-const jwt = require("passport-jwt");
-const JWTStrategy = jwt.Strategy;
-const ExtractJwt = jwt.ExtractJwt;
+import passport from "passport";
+import local from "passport-local";
+import UserModel from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import GitHubStrategy from "passport-github2";
+import configObject from "../config/config.js";
 
-const UserModel = require("../models/user.model.js");
-const GitHubStrategy = require("passport-github2");
-const configObject = require("./config.js");
+const LocalStrategy = local.Strategy;
 
-// Crea el extractor de cookies:
-const cookieExtractor = (req) => {
-  let token = null;
-  if (req && req.cookies) {
-    token = req.cookies["cookieToken"];
-  }
-  return token;
-};
-
-// Inicializa las estrategias de Passport
 const initializePassport = () => {
-  // Estrategia con JWT:
   passport.use(
-    "jwt",
-    new JWTStrategy(
+    "register",
+    new LocalStrategy(
       {
-        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: configObject.SECRETMONGO,
+        passReqToCallback: true,
+        usernameField: "email",
       },
-      async (jwt_payload, done) => {
+      async (req, username, password, done) => {
+        const { first_name, last_name, email, age } = req.body;
+
         try {
-          const user = await UserModel.findById(jwt_payload.user._id);
-          if (!user) {
+          let usuario = await UserModel.findOne({ email });
+
+          if (usuario) {
+            return done(null, false, { message: "Usuario ya registrado" });
+          }
+
+          const passwordHash = await bcrypt.hash(password, 10);
+
+          const role =
+            email === "admin@admin.com" || email === "sofianavasd@gmail.com"
+              ? "admin"
+              : "user";
+
+          let nuevoUsuario = {
+            first_name,
+            last_name,
+            email,
+            age,
+            password: passwordHash,
+            role: role,
+          };
+
+          let resultado = await UserModel.create(nuevoUsuario);
+          return done(null, resultado);
+        } catch (error) {
+          return done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "login",
+    new LocalStrategy(
+      {
+        usernameField: "email",
+      },
+      async (email, password, done) => {
+        try {
+          const userFound = await UserModel.findOne({ email });
+
+          if (userFound) {
+            const isMatch = await bcrypt.compare(password, userFound.password);
+
+            if (isMatch) {
+              return done(null, userFound);
+            } else {
+              return done(null, false);
+            }
+          } else {
             return done(null, false);
           }
-          return done(null, user);
         } catch (error) {
           return done(error);
         }
@@ -40,53 +78,58 @@ const initializePassport = () => {
     )
   );
 
-  // Estrategia con GitHub:
-  passport.use(
-    "github",
-    new GitHubStrategy(
-      {
-        clientID: configObject.CLIENTID,
-        clientSecret: configObject.CLIENTSECRET,
-        callbackURL: configObject.CALLBACKURL,
-      },
-      async (accessToken, refreshToken, profile, done) => {
-        console.log("Profile:", profile);
-        try {
-          let user = await UserModel.findOne({ email: profile._json.email });
-          if (!user) {
-            let newUser = {
-              first_name: profile._json.name,
-              last_name: "",
-              age: "",
-              email: profile._json.email,
-              password: "", // Aquí deberías manejar mejor la creación de usuarios desde GitHub
-            };
-            let result = await UserModel.create(newUser);
-            return done(null, result);
-          } else {
-            return done(null, user);
-          }
-        } catch (error) {
-          return done(error);
-        }
-      }
-    )
-  );
-
-  // Serializa el usuario en la sesión
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
 
-  // Deserializa el usuario desde la sesión
   passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await UserModel.findById(id);
-      done(null, user);
-    } catch (error) {
-      done(error, null);
-    }
+    let user = await UserModel.findById({ _id: id });
+    done(null, user);
   });
 };
 
-module.exports = initializePassport;
+passport.use(
+  "github",
+  new GitHubStrategy(
+    {
+      clientID: configObject.clientID,
+      clientSecret: configObject.clientSecret,
+      callbackURL: configObject.callbackURL,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      console.log("Profile:", profile);
+
+      try {
+        let usuario = await UserModel.findOne({
+          email: profile._json.email,
+        });
+
+        if (!usuario) {
+          const role =
+            profile._json.email === configObject.admin01 ||
+            profile._json.email === configObject.admin02
+              ? "admin"
+              : "user";
+
+          let nuevoUsuario = {
+            first_name: profile._json.name,
+            last_name: "",
+            age: 36,
+            email: profile._json.email,
+            password: "bolt", // Contraseña por defecto
+            role: role,
+          };
+
+          let resultado = await UserModel.create(nuevoUsuario);
+          done(null, resultado);
+        } else {
+          done(null, usuario);
+        }
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
+export default initializePassport;

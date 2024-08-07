@@ -1,222 +1,226 @@
-const UserModel = require("../models/user.model.js");
-const CartModel = require("../models/cart.model.js");
-const jwt = require("jsonwebtoken");
-const { createHash, isValidPassword } = require("../utils/hashbcryp.js");
-const UserDTO = require("../dto/user.dto.js");
-const { generarResetToken } = require("../utils/tokenreset.js");
-const passport = require("passport");
-const EmailManager = require("../services/email.js");
+import CartController from "../controllers/cart.controller.js";
+import UserModel from "../models/user.model.js"; // Asegúrate de que la ruta sea correcta
+import EmailManager from "../services/email.js";
+import { generarResetToken } from "../utils/tokenreset.js";
+import bcrypt from "bcryptjs";
+
+const cartController = new CartController();
 const emailManager = new EmailManager();
+
+function createUserDTO(user) {
+  return {
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    role: user.role,
+    cart: user.cart,
+  };
+}
 
 class UserController {
   async register(req, res) {
-    const { first_name, last_name, email, password, age } = req.body;
-    try {
-      const userExists = await UserModel.findOne({ email });
-      if (userExists) {
-        return res
-          .status(400)
-          .send("Ya existe un usuario registrado con ese email");
-      }
-      //Crear carrito
-      const newCart = new CartModel();
-      await newCart.save();
-
-      const newUser = new UserModel({
-        first_name,
-        last_name,
-        email,
-        cart: newCart._id,
-        password: createHash(password),
-        age,
-      });
-
-      await newUser.save();
-      const token = jwt.sign({ user: newUser }, "my_secret_jwt", {
-        expiresIn: "1h",
-      });
-
-      res.cookie("cookieToken", token, { maxAge: 3600000, httpOnly: true });
-      res.redirect("/api/users/profile");
-    } catch (error) {
-      console.error("Error en register:", error);
-      res.status(500).send("Error interno del servidor en el userController");
+    if (!req.user) {
+      return res.status(400).send("Credenciales inválidas");
     }
+
+    try {
+      const cartUser = await cartController.createCart();
+      console.log("cart desde user:" + cartUser);
+      req.user.cart = cartUser._id;
+      console.log(req.user);
+      await req.user.save();
+
+      req.session.user = createUserDTO(req.user);
+      req.session.login = true;
+
+      res.redirect("/profile");
+    } catch (error) {
+      console.error("Error al crear el usuario:", error);
+      res.status(500).send("Error al crear el usuario");
+    }
+  }
+
+  getCurrentUser(req, res) {
+    if (!req.user) {
+      return res.status(400).send("Credenciales inválidas");
+    }
+    try {
+      const currentUser = createUserDTO(req.user);
+      res.json(currentUser);
+    } catch (error) {
+      console.error("Error al mostrar usuario:", error);
+      res.status(500).send("Error al mostrar usuario");
+    }
+  }
+
+  failedRegister(req, res) {
+    res.send("Registro fallido");
   }
 
   async login(req, res) {
-    const { email, password } = req.body;
     try {
-      const foundUser = await UserModel.findOne({ email });
-      if (!foundUser) {
-        return res
-          .status(401)
-          .send("No hay un usuario con ese email registrado");
+      if (!req.user) {
+        return res.status(400).send("Credenciales inválidas");
       }
 
-      const isValid = isValidPassword(password, foundUser);
-      if (!isValid) {
-        return res.status(401).send("Contraseña incorrecta");
-      }
-
-      const token = jwt.sign({ user: foundUser }, "my_secret_jwt", {
-        expiresIn: "1h",
-      });
-
-      res.cookie("cookieToken", token, { maxAge: 3600000, httpOnly: true });
-      res.redirect("/api/users/profile");
+      req.session.user = createUserDTO(req.user);
+      req.session.login = true;
+      res.redirect("/profile");
     } catch (error) {
-      console.error("Error en login:", error);
-      res.status(500).send("Error interno del servidor en el userController");
+      console.error("Error en el inicio de sesión:", error);
+      res.status(500).send("Error en el inicio de sesión");
     }
   }
-  async profile(req, res) {
-    try {
-      const isPremium = req.user.role === "premium";
-      const userDto = new UserDTO(
-        req.user.first_name,
-        req.user.last_name,
-        req.user.role
-      );
-      const isAdmin = req.user.role === "admin";
 
-      res.render("profile", { user: userDto, isPremium, isAdmin });
-    } catch (error) {
-      res.status(500).send("Error interno del servidor");
-    }
+  failLogin(req, res) {
+    res.send("Inicio de sesión fallido");
   }
 
   async logout(req, res) {
-    res.clearCookie("cookieToken");
-    res.redirect("/login");
-  }
-
-  async admin(req, res) {
-    if (req.user.user.role !== "admin") {
-      return res.status(403).send("Denied access");
+    if (req.session && req.session.login) {
+      try {
+        await new Promise((resolve, reject) =>
+          req.session.destroy((err) => (err ? reject(err) : resolve()))
+        );
+        res.redirect("/login");
+      } catch (err) {
+        res.status(500).send("Error al cerrar sesión");
+      }
+    } else {
+      res.redirect("/login");
     }
-    res.render("admin");
   }
 
-  async githubAuth(req, res) {
-    passport.authenticate("github", { scope: ["user:email"] })(req, res);
-  }
-
-  async githubCallBack(req, res) {
-    passport.authenticate("github", (err, user, info) => {
-      if (err) {
-        return res.redirect("/login");
+  async githubCallback(req, res, next) {
+    try {
+      const userWithCart = req.user;
+      if (!userWithCart.cart) {
+        const newCart = await cartController.createCart(req, res);
+        userWithCart.cart = newCart._id;
+        await userWithCart.save();
       }
+
+      req.session.user = createUserDTO(userWithCart);
+      req.session.login = true;
+      res.redirect("/profile");
+    } catch (error) {
+      console.error("Error en el inicio de sesión:", error);
+      next(error);
+    }
+  }
+
+  async changeUserRoleGet(req, res) {
+    const { uid } = req.params;
+    const { newRole } = req.query;
+
+    try {
+      const user = await UserModel.findById(uid);
       if (!user) {
-        return res.redirect("/login");
+        return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
-      req.logIn(user, (err) => {
-        if (err) {
-          return res.redirect("/login");
-        }
-        return res.redirect("/profile");
-      });
-    })(req, res);
+      user.role = newRole;
+      await user.save();
+
+      res.json({ message: `Rol de usuario actualizado a ${newRole}` });
+    } catch (err) {
+      console.error("Error al cambiar el rol del usuario:", err);
+      res.status(500).json({ message: "Error interno del servidor" });
+    }
   }
 
   async requestPasswordReset(req, res) {
     const { email } = req.body;
     try {
-      //Buscar usuario por email
+      console.log("Iniciando requestPasswordReset con email:", email);
+
       const user = await UserModel.findOne({ email });
       if (!user) {
-        //si no existe un usuario con ese email
-        return res
-          .status(400)
-          .send("No hay un usuario registrado con ese email");
+        console.log("Usuario no encontrado con email:", email);
+        return res.status(404).send("Usuario no encontrado");
       }
-      //si hay usuario con ese email, generamos un token
+
+      console.log("Usuario encontrado:", user);
+
       const token = generarResetToken();
-      //guardamos el token en el usuario
-      user.resetToken = token;
-      user.resetTokenExpiration = Date.now() + 3600000;
+      user.resetToken = {
+        token: token,
+        expire: new Date(Date.now() + 3600000), // 1 hora
+      };
+
+      console.log("Token generado:", token);
+
       await user.save();
-      //enviamos un email con el token
+      console.log("Usuario guardado con token de restablecimiento");
+
       await emailManager.enviarCorreoRestablecimiento(
         email,
         user.first_name,
         token
       );
-      res
-        .status(200)
-        .send("Se envio un email con el token de restablecimiento");
-      res.redirect("/confirmacion-envio");
+      console.log("Correo de restablecimiento enviado a:", email);
+
+      res.redirect("/confirmacionEnvio");
     } catch (error) {
+      console.error("Error en requestPasswordReset:", error);
       res.status(500).send("Error interno del servidor");
     }
   }
+
   async resetPassword(req, res) {
     const { email, password, token } = req.body;
     try {
-      //Busco el usuario por email
+      console.log(
+        "Iniciando resetPassword con email:",
+        email,
+        "y token:",
+        token
+      );
+
       const user = await UserModel.findOne({ email });
       if (!user) {
-        return res
-          .status(400)
-          .send("No hay un usuario registrado con ese email");
+        console.log("Usuario no encontrado con email:", email);
+        return res.render("passwordreset", { error: "Usuario no encontrado" });
       }
 
-      //si el token es válido
+      console.log("Usuario encontrado:", user);
+
       const resetToken = user.resetToken;
-      if (!resetToken || resetToken !== token) {
-        return res.status(400).send("Token inválido");
+      if (!resetToken || resetToken.token !== token) {
+        console.log("Token inválido:", token);
+        return res.render("resetPassword", { error: "El token es inválido" });
       }
-      //verifico si el token ha expirado
+
       const ahora = new Date();
       if (ahora > resetToken.expire) {
-        return res.render("changepassword", {
-          error: "El token ha expirado",
-        });
+        console.log("Token expirado:", token);
+        return res.render("resetPassword", { error: "El token ha expirado" });
       }
-      //verifico que la nueva contraseña sea distinta a la anterior
-      if (isValidPassword(password, user)) {
-        return res.render("changepassword", {
-          error: "La nueva contraseña es la misma que la anterior",
-        });
-      }
-      //actualizo la contraseña
-      user.password = createHash(password);
 
-      //Marco el token como usado
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (isValidPassword) {
+        console.log("La nueva contraseña no puede ser igual a la anterior");
+        return res.render("resetPassword", {
+          //aca esta el error
+          error: "La nueva contraseña no puede ser igual a la anterior",
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
       user.resetToken = undefined;
       await user.save();
 
-      return res.redirect("/login");
+      console.log("Contraseña actualizada para el usuario:", email);
+
+      res.redirect("/login");
     } catch (error) {
-      res.status(500).render("passwordreset", {
-        error: "Error interno del servidor",
-      });
-    }
-  }
-  //Cambiar el rol del usuario:
-  async cambiarRolPremium(req, res) {
-    const { uid } = req.params;
-    try {
-      //Busco el usuario:
-      const user = await UserModel.findById(uid);
-
-      if (!user) {
-        return res.status(404).send("Usuario no encontrado");
-      }
-
-      //Si lo encuentro, le cambio el rol:
-
-      const nuevoRol = user.role === "usuario" ? "premium" : "usuario";
-
-      const actualizado = await UserModel.findByIdAndUpdate(uid, {
-        role: nuevoRol,
-      });
-      res.json(actualizado);
-    } catch (error) {
-      res.status(500).send("Error en el servidor");
+      console.error("Error en resetPassword:", error);
+      res
+        .status(500)
+        .render("passwordreset", { error: "Error interno del servidor" });
     }
   }
 }
 
-module.exports = UserController;
+export default UserController;

@@ -1,9 +1,8 @@
-//Acá hago la conexión con MONGODB:
-
-const mongoose = require("mongoose");
-const configObject = require("./config/config.js");
+import mongoose from "mongoose";
+import "dotenv/config";
+import configObject from "./config/config.js";
 
 mongoose
   .connect(configObject.mongoURL)
-  .then(() => console.log("Conexion exitosa a MongoDB"))
-  .catch((error) => console.log("Error en la conexion con MongoDB", error));
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch((error) => console.log("Error de conexión a MongoDB", error));

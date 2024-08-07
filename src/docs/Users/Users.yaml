@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: API de Usuarios
+  version: 1.0.0
+  description: Documentación de la API de Usuarios
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /users:
+    post:
+      summary: Registra un nuevo usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/User"
+      responses:
+        "200":
+          description: Usuario registrado exitosamente
+        "400":
+          description: Credenciales inválidas
+        "500":
+          description: Error interno del servidor
+
+  /users/current:
+    get:
+      summary: Obtiene el usuario actual
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Usuario actual obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Credenciales inválidas
+        "500":
+          description: Error interno del servidor
+
+  /users/failedRegister:
+    get:
+      summary: Maneja el registro fallido
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Registro fallido
+
+  /users/login:
+    post:
+      summary: Inicia sesión de un usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/Login"
+      responses:
+        "200":
+          description: Inicio de sesión exitoso
+        "400":
+          description: Credenciales inválidas
+        "500":
+          description: Error interno del servidor
+
+  /users/faillogin:
+    get:
+      summary: Maneja el inicio de sesión fallido
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Inicio de sesión fallido
+
+  /users/logout:
+    get:
+      summary: Cierra sesión de un usuario
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Cierre de sesión exitoso
+        "500":
+          description: Error interno del servidor
+
+  /users/github:
+    get:
+      summary: Inicia sesión con GitHub
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Redirección a GitHub para autenticación
+
+  /users/githubcallback:
+    get:
+      summary: Maneja la devolución de llamada de GitHub
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Inicio de sesión con GitHub exitoso
+        "500":
+          description: Error interno del servidor
+
+  /users/premium/{uid}:
+    get:
+      summary: Cambia el rol de un usuario a premium
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rol de usuario actualizado a premium
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+  /users/requestPasswordReset:
+    post:
+      summary: Solicita el restablecimiento de contraseña
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/RequestPasswordReset"
+      responses:
+        "200":
+          description: Correo de restablecimiento de contraseña enviado
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+  /users/reset-password:
+    post:
+      summary: Restablece la contraseña de un usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/ResetPassword"
+      responses:
+        "200":
+          description: Contraseña restablecida exitosamente
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado por MongoDB
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Email del usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+        age:
+          type: integer
+          description: Edad del usuario
+        role:
+          type: string
+          enum: ["admin", "user", "premium"]
+          description: Rol del usuario
+        cart:
+          type: string
+          description: ID del carrito del usuario
+        resetToken:
+          type: object
+          properties:
+            token:
+              type: string
+            expire:
+              type: string
+              format: date-time
+      example:
+        _id: "60f6a4f9c2a0a2a3c8c1e8b1"
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        password: "hashed_password"
+        age: 30
+        role: "user"
+        cart: "60f6a4f9c2a0a2a3c8c1e8b2"
+        resetToken:
+          token: "reset_token"
+          expire: "2023-01-01T00:00:00Z"
+
+  requestBodies:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Email del usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+        age:
+          type: integer
+          description: Edad del usuario
+        role:
+          type: string
+          enum: ["admin", "user", "premium"]
+          description: Rol del usuario
+        cart:
+          type: string
+          description: ID del carrito del usuario
+      example:
+        first_name: "Jane"
+        last_name: "Doe"
+        email: "jane.doe@example.com"
+        password: "1234"
+        age: 25
+        role: "user"
+        cart: "60f6a4f9c2a0a2a3c8c1e8b3"
+
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email del usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+      example:
+        email: "john.doe@example.com"
+        password: "1234"
+
+    RequestPasswordReset:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email del usuario
+      example:
+        email: "john.doe@example.com"
+
+    ResetPassword:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email del usuario
+        password:
+          type: string
+          description: Nueva contraseña del usuario
+        token:
+          type: string
+          description: Token de restablecimiento de contraseña
+      example:
+        email: "john.doe@example.com"
+        password: "new_password"
+        token: "reset_token"

@@ -1,24 +1,24 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 const ticketSchema = new mongoose.Schema({
   code: {
     type: String,
-    unique: true,
     required: true,
+    unique: true,
+    default: () => `TICKET-${Math.floor(Math.random() * 1000000)}`,
   },
   purchase_datetime: {
     type: Date,
     default: Date.now,
-    required: true,
   },
   amount: {
     type: Number,
     required: true,
   },
   purchaser: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
 });
-const TicketModel = mongoose.model("Ticket", ticketSchema);
-module.exports = TicketModel;
+
+export const TicketModel = mongoose.model("Ticket", ticketSchema);

@@ -1,29 +1,36 @@
-const express = require("express");
-const router = express.Router();
-const ViewsController = require("../controllers/view.controller.js");
-const viewsController = new ViewsController();
-const checkUserRole = require("../middleware/checkrole.js");
-const passport = require("passport");
+import { Router } from "express";
+import ViewsController from "../controllers/views.controller.js";
+import { authorize } from "../middleware/authmiddleware.js";
+import generarProductos from "../mocking.js";
 
+const viewsController = new ViewsController();
+const router = Router();
+
+router.get("/", viewsController.home);
+router.get(
+  "/realtimeproducts",
+  authorize(["admin", "premium"]),
+  viewsController.realtimeproducts
+);
+router.get("/chat", authorize(["user", "premium"]), viewsController.chat);
 router.get(
   "/products",
-  checkUserRole(["usuario"]),
-  passport.authenticate("jwt", { session: false }),
-  viewsController.renderProducts
+  authorize(["user", "premium"]),
+  viewsController.products
 );
+router.get("/carts/:cid", viewsController.cart);
+router.get("/login", viewsController.login);
+router.get("/register", viewsController.register);
+router.get("/profile", viewsController.profile);
+router.get("/mocking", (req, res) => {
+  const productsMocking = [];
+  for (let i = 0; i < 100; i++) {
+    productsMocking.push(generarProductos());
+  }
+  res.send(productsMocking);
+});
 
-router.get("/carts/:cid", viewsController.renderCart);
-router.get("/login", viewsController.renderLogin);
-router.get("/register", viewsController.renderRegister);
-router.get(
-  "/realtimeProducts",
-  checkUserRole(["admin"]),
-  viewsController.renderRealTimeProducts
-);
-router.get("/chat", checkUserRole(["usuario"]), viewsController.renderChat);
-router.get("/", viewsController.renderHome);
-
-router.get("/resetpassword", viewsController.renderResetPassword);
-router.get("/changepassword", viewsController.renderChangePassword);
-router.get("/confirm", viewsController.renderConfirm);
-module.exports = router;
+router.get("/reset-password", viewsController.renderGenerarResetPassword);
+router.get("/password", viewsController.renderResetPassword);
+router.get("/confirmacionEnvio", viewsController.renderConfirmacion);
+export default router;

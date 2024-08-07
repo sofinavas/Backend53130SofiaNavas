@@ -1,4 +1,4 @@
-const { faker } = require("@faker-js/faker");
+import { faker } from "@faker-js/faker";
 
 const generarProductos = () => {
   const productId = faker.database.mongodbObjectId();
@@ -22,4 +22,4 @@ const generarProductos = () => {
   return producto;
 };
 
-module.exports = generarProductos;
+export default generarProductos;

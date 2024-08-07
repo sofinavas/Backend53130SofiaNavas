@@ -1,19 +1,25 @@
-const dotenv = require("dotenv");
-const program = require("../utils/utils.js");
-const { mode } = require("../utils/utils.js");
+import dotenv from "dotenv";
+
+import program from "../utils.js";
+
+const { mode } = program.opts();
 
 dotenv.config({
-  path: mode === "produccion" ? "./.env.production" : "./.env.development",
+  path: mode === "produccion" ? "./.env.produccion" : "./.env.desarrollo",
 });
 
 const configObject = {
   PORT: process.env.PORT,
-  MONGO_URL: process.env.MONGO_URL,
-  CLIENTID: process.env.CLIENTID,
-  CLIENTSECRET: process.env.CLIENTSECRET,
-  CALLBACKURL: process.env.CALLBACKURL,
-  SECRETMONGO: process.env.SECRETMONGO,
-  ESTADO: process.env.ESTADO,
+  mongoURL: process.env.MONGOURL,
+  clientID: process.env.CLIENTID,
+  clientSecret: process.env.CLIENTSECRET,
+  callbackURL: process.env.CALLBACKURL,
+  secret: process.env.SECRETMONGO,
+  admin01: process.env.ADMIN01,
+  admin02: process.env.ADMIN02,
+  estado: process.env.estado,
+  mailerUser: process.env.MAILERUSER,
+  mailerPassword: process.env.MAILERPASSWORD,
 };
 
-module.exports = configObject;
+export default configObject;

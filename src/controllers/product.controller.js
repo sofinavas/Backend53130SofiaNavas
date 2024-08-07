@@ -1,65 +1,129 @@
-const ProductRepository = require("../repositories/product.repository.js");
-const productRepository = new ProductRepository();
+import { productsModel } from "../models/products.model.js";
 
-class ProductController {
-  async addProduct(req, res) {
-    const nuevoProducto = req.body;
+export default class ProductController {
+  getProducts = async (queryParams) => {
     try {
-      const resultado = await productRepository.addProduct(nuevoProducto);
-      res.json(resultado);
-    } catch (error) {
-      res.status(500).send("Internal Server Error");
-    }
-  }
-  async getProducts(req, res) {
-    try {
-      let { limit = 10, page = 1, sort, query } = req.query;
-      const productos = await productRepository.getProducts(
-        limit,
-        page,
-        sort,
-        query
-      );
-      res.json(productos);
-    } catch (error) {
-      res.status(500).send("Internal Server Error");
-    }
-  }
-  async getProductById(req, res) {
-    const id = req.params.pid;
-    try {
-      const buscado = await productRepository.getProductById(id);
-      if (!buscado) {
-        return res.json({ error: "Producto no encontrado" });
+      const { limit = 10, page = 1, sort, query } = queryParams;
+      const skip = (page - 1) * limit;
+
+      let filter = {};
+      if (query) {
+        filter = {
+          ...filter,
+          $or: [{ category: query }, { availability: query }],
+        };
       }
-      res.json(buscado);
+
+      let sortOption = {};
+      if (sort === "asc") {
+        sortOption = { price: 1 };
+      } else if (sort === "desc") {
+        sortOption = { price: -1 };
+      }
+
+      const products = await productsModel
+        .find(filter)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limit);
+      const totalProducts = await productsModel.countDocuments(filter);
+      const totalPages = Math.ceil(totalProducts / limit);
+
+      const hasPrevPage = page > 1;
+      const hasNextPage = page < totalPages;
+      const prevPage = hasPrevPage ? page - 1 : null;
+      const nextPage = hasNextPage ? page + 1 : null;
+
+      return {
+        status: "success",
+        payload: products,
+        totalPages,
+        prevPage,
+        nextPage,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink: hasPrevPage
+          ? `/api/products?page=${prevPage}&limit=${limit}`
+          : null,
+        nextLink: hasNextPage
+          ? `/api/products?page=${nextPage}&limit=${limit}`
+          : null,
+      };
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      console.error("Error al obtener productos:", error);
+      throw new Error("Error al obtener productos.");
+    }
+  };
+
+  getProductsView = async () => {
+    try {
+      return await productsModel.find().lean();
+    } catch (error) {
+      console.error("Error al obtener productos en formato lean:", error);
+      throw new Error("Error al obtener productos en formato lean.");
+    }
+  };
+
+  getProductById = async (id) => {
+    try {
+      const producto = await productsModel.findById(id);
+      if (!producto) {
+        console.error(`Producto con ID ${id} no encontrado`);
+        return null;
+      }
+      return producto;
+    } catch (error) {
+      console.error(`Error al encontrar producto por ID ${id}:`, error);
+      throw new Error(`Error al encontrar producto con ID ${id}.`);
+    }
+  };
+
+  async addProduct(product) {
+    try {
+      const newProduct = await productsModel.create(product);
+      console.log("Producto creado:", newProduct);
+      return newProduct;
+    } catch (error) {
+      console.error("Error al crear un producto:", error);
+      throw new Error("Error al crear un producto.");
     }
   }
-  async updateProduct(req, res) {
+
+  async updateProduct(id, productoActualizado) {
     try {
-      const id = req.params.pid;
-      const productoActualizado = req.body;
-      const resultado = await productRepository.updateProduct(
+      console.log("Intentando actualizar producto con ID:", id);
+      console.log("Datos del producto actualizado:", productoActualizado);
+      const updateProduct = await productsModel.findByIdAndUpdate(
         id,
-        productoActualizado
+        productoActualizado,
+        { new: true } // Devuelve el producto actualizado
       );
-      res.json(resultado, { message: "Producto actualizado correctamente" });
+      if (!updateProduct) {
+        console.error(`Producto con ID ${id} no encontrado`);
+        return null;
+      }
+      console.log("Producto actualizado:", updateProduct);
+      return updateProduct;
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      console.error(`Error al actualizar producto con ID ${id}:`, error);
+      throw new Error(`Error al actualizar producto con ID ${id}.`);
     }
   }
-  async deleteProduct(req, res) {
-    const id = req.params.pid;
+
+  async deleteProduct(id) {
     try {
-      let respuesta = await productRepository.deleteProduct(id);
-      res.json(respuesta, {
-        message: "Producto eliminado exitosamente",
-      });
+      console.log("Intentando eliminar producto con ID:", id);
+      const deleteProduct = await productsModel.findByIdAndDelete(id);
+      if (!deleteProduct) {
+        console.error(`Producto con ID ${id} no encontrado`);
+        return null;
+      }
+      console.log(`Producto con ID ${id} eliminado`);
+      return deleteProduct;
     } catch (error) {
-      res.status(500).send("Internal Server Error");
+      console.error(`Error al eliminar producto con ID ${id}:`, error);
+      throw new Error(`Error al eliminar producto con ID ${id}.`);
     }
   }
 }
-module.exports = ProductController;

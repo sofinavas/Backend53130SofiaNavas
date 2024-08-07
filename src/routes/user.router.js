@@ -1,47 +1,43 @@
-const express = require("express");
+// user.router.js
+import express from "express";
+import passport from "passport";
+import UserController from "../controllers/user.controller.js";
+import { authorize } from "../middleware/authmiddleware.js";
+
 const router = express.Router();
-const passport = require("passport");
-const UserController = require("../controllers/user.controller.js");
 const userController = new UserController();
 
-// Ruta para registrar usuarios
-router.post("/register", userController.register.bind(userController));
-
-// Ruta para loguear usuarios
-router.post("/login", userController.login.bind(userController));
-
-// Ruta para cerrar sesión
-router.post("/logout", userController.logout.bind(userController));
-
-// Ruta para el perfil del usuario (debe estar autenticado)
-router.get(
-  "/profile",
-  passport.authenticate("jwt", { session: false }),
-  userController.profile.bind(userController)
+router.post(
+  "/",
+  passport.authenticate("register", { failureRedirect: "/failedRegister" }),
+  userController.register
 );
-
-// Ruta para acceso de administrador (debe estar autenticado)
-router.get(
-  "/admin",
-  passport.authenticate("jwt", { session: false }),
-  userController.admin.bind(userController)
+router.get("/current", userController.getCurrentUser);
+router.get("/failedRegister", userController.failedRegister);
+router.post(
+  "/login",
+  passport.authenticate("login", {
+    failureRedirect: "/api/sessions/faillogin",
+  }),
+  userController.login
 );
-
-// Rutas para autenticación con Github
-router.get("/github", userController.githubAuth.bind(userController));
+router.get("/faillogin", userController.failLogin);
+router.get("/logout", userController.logout);
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
 router.get(
   "/githubcallback",
   passport.authenticate("github", { failureRedirect: "/login" }),
-  userController.githubCallBack.bind(userController)
+  userController.githubCallback
 );
+router.get(
+  "/premium/:uid",
+  authorize("admin"),
+  userController.changeUserRoleGet
+);
+router.post("/requestPasswordReset", userController.requestPasswordReset);
+router.post("/reset-password", userController.resetPassword);
 
-router.post(
-  "/requestPasswordReset",
-  userController.requestPasswordReset.bind(userController)
-);
-router.post(
-  "/reset-password",
-  userController.resetPassword.bind(userController)
-);
-
-module.exports = router;
+export default router;

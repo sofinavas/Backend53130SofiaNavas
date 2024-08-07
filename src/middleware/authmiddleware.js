@@ -1,16 +1,14 @@
-const passport = require("passport");
+export function authorize(roles) {
+  if (typeof roles === "string") {
+    roles = [roles];
+  }
 
-function authMiddleware(req, res, next) {
-  passport.authenticate("jwt", { session: false }, (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      req.user = null;
-    } else {
-      req.user = user;
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res
+        .status(403)
+        .send("Acceso denegado: No tienes los permisos necesarios.");
     }
     next();
-  })(req, res, next);
+  };
 }
-module.exports = authMiddleware;

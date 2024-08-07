@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
-//El esquema de carrito: un array que contiene objetos
 const cartSchema = new mongoose.Schema({
   products: [
     {
@@ -17,11 +17,6 @@ const cartSchema = new mongoose.Schema({
   ],
 });
 
-//Middleware pre que realiza la población automáticamente
-cartSchema.pre("findOne", function (next) {
-  this.populate("products.product", "_id title price");
-  next();
-});
+cartSchema.plugin(mongoosePaginate);
 
-const CartModel = mongoose.model("carts", cartSchema);
-module.exports = CartModel;
+export const cartModel = mongoose.model("Cart", cartSchema);

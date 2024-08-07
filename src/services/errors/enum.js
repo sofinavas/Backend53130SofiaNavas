@@ -7,4 +7,4 @@ const errorDictionary = {
   //more errors
 };
 
-module.exports = errorDictionary;
+export default errorDictionary;

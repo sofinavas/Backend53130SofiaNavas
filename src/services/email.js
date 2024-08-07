@@ -1,4 +1,5 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
+import configObject from "../config/config.js";
 
 class EmailManager {
   constructor() {
@@ -6,58 +7,61 @@ class EmailManager {
       service: "gmail",
       port: 587,
       auth: {
-        user: "sofianavasd@gmail.com",
-        pass: "tpmg gqja agpk deqt",
+        user: configObject.mailerUser,
+        pass: configObject.mailerPassword,
       },
     });
   }
 
-  async sendEmail(email, first_name, ticket) {
+  async enviarCorreoCompra(first_name, ticket) {
     try {
       const mailOptions = {
-        from: "<sofianavasd@gmail.com>",
-        to: email,
-        subject: "Confirmacion de compra",
+        from: "sofianavasd@gmail.com",
+        to: ticket.purchaser,
+        subject: "Confirmación de Compra",
         html: `
-          <div>
-            <h1>Confirmación de compra</h1>
-            <p>Hola ${first_name}. Gracias por tu compra!</p>
-            <p>Tu ticket es: ${ticket}</p>
-          </div>
-        `,
+                    <h1>Confirmación de Compra</h1>
+                    <p>Hola ${first_name},</p>
+                    <p>Gracias por tu compra. A continuación, encontrarás los detalles de tu pedido:</p>
+                    <p>Número de orden: <strong>${ticket.code}</strong></p>
+                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                    <p>Saludos,</p>
+                    <p>El equipo de coder Ecommerse</p>
+                `,
       };
       await this.transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error("Error al enviar el correo:", error);
+      console.log("Error al enviar el correo de confirmación de compra", error);
     }
   }
 
   async enviarCorreoRestablecimiento(email, first_name, token) {
     try {
       const mailOptions = {
-        from: "<sofianavasd@gmail.com>",
+        from: "sofianavasd@gmail.com",
         to: email,
-        subject: "Restablecer contraseña",
+        subject: "Restablecimiento de Contraseña",
         html: `
-          <div>
-            <h1>Restablecer contraseña</h1>
-            <p>
-              Hola ${first_name}. El código de confirmación para restablecer tu
-              contraseña es: <strong>${token}</strong>
-            </p>
-            <p>
-              <a href="http://localhost:8080/password">
-                Restablecer contraseña
-              </a>
-            </p>
-          </div>
-        `,
+                    <h1>Restablecimiento de Contraseña</h1>
+                    <p>Hola ${first_name},</p>
+                    <p>Hemos recibido una solicitud para restablecer tu contraseña. Utiliza el siguiente código para completar el proceso:</p>
+                    <p>Código de confirmación: <strong>${token}</strong></p>
+                    <p>Este código expira en una hora.</p>
+                    <p>Puedes restablecer tu contraseña haciendo clic en el siguiente enlace:</p>
+                    <a href="http://localhost:8080/password">Restablecer Contraseña</a>
+                    <p>Si no solicitaste este cambio, por favor ignora este correo.</p>
+                    <p>Saludos,</p>
+                    <p>El equipo de Bolt</p>
+                `,
       };
       await this.transporter.sendMail(mailOptions);
     } catch (error) {
-      console.error("Error al enviar el correo de recuperación:", error);
+      console.log(
+        "Error al enviar el correo de restablecimiento de contraseña",
+        error
+      );
     }
   }
 }
 
-module.exports = EmailManager;
+export default EmailManager;

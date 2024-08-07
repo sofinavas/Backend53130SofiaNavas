@@ -1,4 +1,4 @@
-const errorDictionary = require("./custom-error.js");
+import errorDictionary from "../errors/enum.js";
 
 function errorHandler(err, req, res, next) {
   console.log("errorHandler", err);
@@ -10,4 +10,4 @@ function errorHandler(err, req, res, next) {
   }
 }
 
-module.exports = errorHandler;
+export default errorHandler;
