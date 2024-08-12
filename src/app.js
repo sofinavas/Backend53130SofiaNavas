@@ -96,3 +96,5 @@ const swaggerOptions = {
 //coonecto swagger al servidor de express
 const specs = swaggerJSDoc(swaggerOptions);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+export default app;

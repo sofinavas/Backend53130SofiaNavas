@@ -6,13 +6,18 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "nodemon src/app.js --mode desarrollo",
-    "start": "node src/app.js --mode produccion"
+    "start": "node src/app.js --mode produccion",
+    "test": "mocha test/supertest.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "chai": "^5.1.1",
+    "chai-http": "^5.0.0",
+    "mocha": "^10.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
