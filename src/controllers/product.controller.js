@@ -7,7 +7,7 @@ export default class ProductController {
       const skip = (page - 1) * limit;
 
       let filter = {};
-      if (query) {
+      if (query && typeof query === "string") {
         filter = {
           ...filter,
           $or: [{ category: query }, { availability: query }],

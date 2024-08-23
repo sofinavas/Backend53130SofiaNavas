@@ -3,7 +3,7 @@ import local from "passport-local";
 import UserModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import GitHubStrategy from "passport-github2";
-import configObject from "../config/config.js";
+import configObject from "./config.js";
 
 const LocalStrategy = local.Strategy;
 

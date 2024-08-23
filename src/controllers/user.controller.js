@@ -14,6 +14,7 @@ function createUserDTO(user) {
     email: user.email,
     role: user.role,
     cart: user.cart,
+    lastLogin: user.lastLogin,
   };
 }
 
@@ -53,6 +54,60 @@ class UserController {
     }
   }
 
+  async getUsers() {
+    try {
+      const users = await UserModel.find({}, "first_name last_name email role");
+      return users;
+    } catch (error) {
+      console.error("Error al obtener todos los usuarios: ", error);
+      throw error;
+    }
+  }
+
+  async deleteInactiveUsers(req, res) {
+    const thirtyMinutesAgo = new Date(Date.now() - 1 * 60 * 1000); // 30 minutos en milisegundos
+    try {
+      // Buscar usuarios inactivos con rol "user"
+      const inactiveUsers = await UsuarioModel.find({
+        lastLogin: { $lt: thirtyMinutesAgo },
+        role: "user",
+      });
+
+      res.json(inactiveUsers);
+
+      // Eliminar a los usuarios inactivos
+      for (const user of inactiveUsers) {
+        await UsuarioModel.findByIdAndDelete(user._id);
+      }
+    } catch (error) {
+      console.error("Error al eliminar a los usuarios inactivos: ", error);
+      res.status(500).send("Error al eliminar a los usuarios inactivos.");
+    }
+  }
+
+  async deleteUser(req, res) {
+    const { uid } = req.params;
+
+    try {
+      await UsuarioModel.findByIdAndDelete(uid);
+      res.redirect("/adminUsers");
+    } catch (error) {
+      res.status(500).send("Error al eliminar el usuario");
+    }
+  }
+
+  async updateUserRole(req, res) {
+    const { uid } = req.params;
+    const { role } = req.body;
+
+    try {
+      await UsuarioModel.findByIdAndUpdate(uid, { role });
+      res.redirect("/adminUsers");
+    } catch (error) {
+      res.status(500).send("Error al actualizar el rol del usuario");
+    }
+  }
+
   failedRegister(req, res) {
     res.send("Registro fallido");
   }
@@ -62,7 +117,10 @@ class UserController {
       if (!req.user) {
         return res.status(400).send("Credenciales inválidas");
       }
-
+      await UserModel.findByIdAndUpdate(req.user._id, {
+        lastLogin: new Date(),
+      });
+      console.log("lastlogin");
       req.session.user = createUserDTO(req.user);
       req.session.login = true;
       res.redirect("/profile");
@@ -99,7 +157,10 @@ class UserController {
         userWithCart.cart = newCart._id;
         await userWithCart.save();
       }
-
+      await UsuarioModel.findByIdAndUpdate(req.user._id, {
+        lastLogin: new Date(),
+      });
+      console.log("lastlogin");
       req.session.user = createUserDTO(userWithCart);
       req.session.login = true;
       res.redirect("/profile");
@@ -109,12 +170,12 @@ class UserController {
     }
   }
 
-  async changeUserRoleGet(req, res) {
+  /* async changeUserRoleGet(req, res) {
     const { uid } = req.params;
     const { newRole } = req.query;
 
     try {
-      const user = await UserModel.findById(uid);
+      const user = await UsuarioModel.findById(uid);
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
@@ -127,14 +188,14 @@ class UserController {
       console.error("Error al cambiar el rol del usuario:", err);
       res.status(500).json({ message: "Error interno del servidor" });
     }
-  }
+  } */
 
   async requestPasswordReset(req, res) {
     const { email } = req.body;
     try {
       console.log("Iniciando requestPasswordReset con email:", email);
 
-      const user = await UserModel.findOne({ email });
+      const user = await UsuarioModel.findOne({ email });
       if (!user) {
         console.log("Usuario no encontrado con email:", email);
         return res.status(404).send("Usuario no encontrado");
@@ -177,7 +238,7 @@ class UserController {
         token
       );
 
-      const user = await UserModel.findOne({ email });
+      const user = await UsuarioModel.findOne({ email });
       if (!user) {
         console.log("Usuario no encontrado con email:", email);
         return res.render("passwordreset", { error: "Usuario no encontrado" });

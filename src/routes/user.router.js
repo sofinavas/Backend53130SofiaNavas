@@ -12,6 +12,18 @@ router.post(
   passport.authenticate("register", { failureRedirect: "/failedRegister" }),
   userController.register
 );
+router.get("/", authorize("admin"), userController.getUsers);
+router.post(
+  "/update-role/:uid",
+  authorize("admin"),
+  userController.updateUserRole
+);
+router.post("/delete/:uid", authorize("admin"), userController.deleteUser);
+router.post(
+  "/delete-inactive",
+  authorize("admin"),
+  userController.deleteInactiveUsers
+);
 router.get("/current", userController.getCurrentUser);
 router.get("/failedRegister", userController.failedRegister);
 router.post(
@@ -32,12 +44,7 @@ router.get(
   passport.authenticate("github", { failureRedirect: "/login" }),
   userController.githubCallback
 );
-router.get(
-  "/premium/:uid",
-  authorize("admin"),
-  userController.changeUserRoleGet
-);
+/* router.get("/premium/:uid", authorize("admin"), userController.changeUserRoleGet); */
 router.post("/requestPasswordReset", userController.requestPasswordReset);
 router.post("/reset-password", userController.resetPassword);
-
 export default router;

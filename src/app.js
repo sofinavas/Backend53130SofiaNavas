@@ -35,6 +35,11 @@ const hbs = handlebars.create({
         (total, product) => total + product.quantity * product.product.price,
         0
       ),
+    eq: (a, b) => a === b, // Registrar el helper "eq"
+  },
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
   },
 });
 

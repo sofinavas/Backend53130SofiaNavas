@@ -1,40 +1,56 @@
-<h1 class="text-center">Carrito de Compras</h1>
+<h1>Carrito de Compras</h1>
 
-<div class="container">
-  {{#each productos}}
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Producto: {{this.product.title}}</h5>
-        <p class="card-text">Cantidad: {{this.quantity}}</p>
-        <p class="card-text">Precio: ${{this.product.totalPrice}}</p>
-        <button
-          onclick="eliminarProducto('{{cartId}}', '{{this.product._id}}')"
-          class="btn btn-danger"
-        >Eliminar</button>
-      </div>
-    </div>
-  {{/each}}
+{{#each products}}
+  <div class="product" data-product-id="{{this.product._id}}">
+    <h2>{{this.product.title}}</h2>
+    <p>Cantidad: {{this.quantity}}</p>
+    <p>Precio: ${{this.product.price}}</p>
+    <p>Subtotal: ${{multiply this.quantity this.product.price}}</p>
+    <button
+      class="delete-product"
+      data-product-id="{{this.product._id}}"
+    >Eliminar del Carrito</button>
+  </div>
+{{/each}}
+
+<div class="total" id="total-container" style="display: none;">
+  <h3>Total de la Compra:</h3>
+  <p id="total-amount">${{calculateTotal products}}</p>
+  <form
+    action="/api/carts/{{cartId}}/purchase"
+    method="POST"
+    id="purchase-form"
+  >
+    <button type="submit">Finalizar Compra</button>
+  </form>
 </div>
 
-<button onclick="vaciarCarrito('{{cartId}}')" class="btn btn-danger">Vaciar
-  Carrito</button>
-<h3 class="mt-2">Total de la compra: ${{totalCompra}}</h3>
-
-<form method="post" action="/api/carts/{{cartId}}/purchase">
-  <button type="submit" class="btn btn-success">Finalizar Compra</button>
-</form>
+<p id="empty-message" style="display: none;">No hay productos en el carrito.</p>
 
 <script>
-  function eliminarProducto(cartId, productId) {
-  fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'DELETE',
-  headers: { 'Content-Type': 'application/json' } }) .then(response => { if
-  (!response.ok) { throw new Error('Error al eliminar el producto del carrito');
-  } return response.json(); }) .then(data => { console.log('Producto
-  eliminado:', data); location.reload(); }) .catch(error => {
-  console.error('Error:', error); }); } function vaciarCarrito(cartId) {
-  fetch(`/api/carts/${cartId}`, { method: 'DELETE', headers: { 'Content-Type':
-  'application/json' } }) .then(response => { if (!response.ok) { throw new
-  Error('Error al vaciar el carrito'); } return response.json(); }) .then(data
-  => { console.log('Carrito vaciado:', data); location.reload(); }) .catch(error
-  => { console.error('Error:', error); }); }
+  document.addEventListener('DOMContentLoaded', function() { const cartId = '{{cartId}}';
+  const totalContainer = document.getElementById('total-container'); const
+  totalAmountElement = document.getElementById('total-amount'); const
+  purchaseForm = document.getElementById('purchase-form'); const emptyMessage =
+  document.getElementById('empty-message');
+  document.querySelectorAll('.delete-product').forEach(button => {
+  button.addEventListener('click', function() { const productId =
+  this.dataset.productId; fetch(`/api/carts/${cartId}/products/${productId}`, {
+  method: 'DELETE', headers: { 'Content-Type': 'application/json' } })
+  .then(response => { if (response.ok) { const productDiv =
+  document.querySelector(`.product[data-product-id="${productId}"]`); if
+  (productDiv) { productDiv.remove(); updateTotal(); checkEmptyCart(); } } else
+  { console.error('Error al eliminar el producto'); } }) .catch(error =>
+  console.error('Error:', error)); }); }); function updateTotal() { let total =
+  0; document.querySelectorAll('.product').forEach(product => { const quantity =
+  parseInt(product.querySelector('p:nth-child(2)').textContent.split(': ')[1]);
+  const price =
+  parseFloat(product.querySelector('p:nth-child(3)').textContent.split(':
+  $')[1]); total += quantity * price; }); totalAmountElement.textContent =
+  `$${total.toFixed(2)}`; } function checkEmptyCart() { const hasProducts =
+  document.querySelectorAll('.product').length > 0; if (hasProducts) {
+  totalContainer.style.display = 'block'; purchaseForm.style.display = 'block';
+  emptyMessage.style.display = 'none'; } else { totalContainer.style.display =
+  'none'; purchaseForm.style.display = 'none'; emptyMessage.style.display =
+  'block'; } } updateTotal(); checkEmptyCart(); });
 </script>

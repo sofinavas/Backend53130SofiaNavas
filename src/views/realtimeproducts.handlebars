@@ -1,4 +1,4 @@
-<h1>Real Time Products</h1>
+{{! <h1>Real Time Products</h1>
 <h2>Productos actualizados en tiempo real</h2>
 
 <div id="contenedorProductos"></div>
@@ -21,4 +21,122 @@
 </form>
 
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-<script src="js/realtime.js"></script>
+<script src="js/realtime.js"></script> }}
+<form id="formProduct">
+  <!-- Campo para el nombre del producto -->
+  <div>
+    <label for="title">Nombre del Producto</label>
+    <div>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        placeholder="Nombre del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para la descripción del producto -->
+  <div>
+    <label for="description">Descripción</label>
+    <div>
+      <input
+        type="text"
+        name="description"
+        id="description"
+        placeholder="Descripción del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para la cantidad de unidades disponibles -->
+  <div>
+    <label for="stock">Unidades disponibles</label>
+    <div>
+      <input
+        type="number"
+        name="stock"
+        id="stock"
+        placeholder="Unidades del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para la URL de la imagen del producto -->
+  <div>
+    <label for="thumbnail">Imagen del producto</label>
+    <div>
+      <input
+        type="text"
+        name="thumbnail"
+        id="thumbnail"
+        placeholder="Link de la imagen del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para la categoría del producto -->
+  <div>
+    <label for="category">Categoría</label>
+    <div>
+      <input
+        type="text"
+        name="category"
+        id="category"
+        placeholder="Categoría del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para el precio del producto -->
+  <div>
+    <label for="price">Precio</label>
+    <div>
+      <input
+        type="number"
+        name="price"
+        id="price"
+        placeholder="Precio del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Campo para indicar si el producto está en estado activo o no -->
+  <div>
+    <div>
+      <input
+        name="status"
+        type="checkbox"
+        value="true"
+        id="flexCheckChecked"
+        checked
+      />
+      <label for="flexCheckChecked">Estado</label>
+    </div>
+  </div>
+
+  <!-- Campo para el código del producto -->
+  <div>
+    <label for="code">Código</label>
+    <div>
+      <input
+        type="text"
+        name="code"
+        id="code"
+        placeholder="Código del producto"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Botón para enviar el formulario y crear el producto -->
+  <div>
+    <button type="submit" id="add-btn">Crear producto</button>
+  </div>
+</form>
