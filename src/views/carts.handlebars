@@ -47,7 +47,7 @@
   const price =
   parseFloat(product.querySelector('p:nth-child(3)').textContent.split(':
   $')[1]); total += quantity * price; }); totalAmountElement.textContent =
-  `$${total.toFixed(2)}`; } function checkEmptyCart() { const hasProducts =
+  `$${total.toFixed(2)}`; } function checkEmptyCart() { const hasProducts = --}
   document.querySelectorAll('.product').length > 0; if (hasProducts) {
   totalContainer.style.display = 'block'; purchaseForm.style.display = 'block';
   emptyMessage.style.display = 'none'; } else { totalContainer.style.display =

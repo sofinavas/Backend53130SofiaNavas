@@ -195,7 +195,7 @@ class UserController {
     try {
       console.log("Iniciando requestPasswordReset con email:", email);
 
-      const user = await UsuarioModel.findOne({ email });
+      const user = await UserModel.findOne({ email });
       if (!user) {
         console.log("Usuario no encontrado con email:", email);
         return res.status(404).send("Usuario no encontrado");
@@ -238,7 +238,7 @@ class UserController {
         token
       );
 
-      const user = await UsuarioModel.findOne({ email });
+      const user = await UserModel.findOne({ email });
       if (!user) {
         console.log("Usuario no encontrado con email:", email);
         return res.render("passwordreset", { error: "Usuario no encontrado" });

@@ -11,15 +11,49 @@ class CartController {
     try {
       const nuevoCarrito = await cartModel.create({ products: [] });
       logger.info("Carrito creado:", nuevoCarrito);
-      return nuevoCarrito;
+      return res.json({ cartId: nuevoCarrito._id });
     } catch (error) {
       logger.error("Error al crear el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
+  async addProductToCart(req, res) {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const quantity = req.body.quantity;
+
+    try {
+      const carrito = await cartModel.findById(cartId);
+      if (!carrito) {
+        console.log("Carrito no encontrado");
+        return res.status(404).json({ error: "Carrito no encontrado" });
+      }
+
+      const producto = await productsModel.findById(productId);
+      if (!producto) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      }
+
+      const productoEnCarrito = carrito.products.find(
+        (p) => p.product.toString() === producto._id.toString()
+      );
+      if (productoEnCarrito) {
+        productoEnCarrito.quantity += quantity;
+      } else {
+        carrito.products.push({ product: producto, quantity });
+      }
+
+      await carrito.save();
+      res.json(carrito);
+    } catch (error) {
+      logger.error("Error al agregar producto al carrito:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
   async getCartById(req, res) {
     const cartId = req.params.cid;
+
     try {
       const carrito = await cartModel
         .findById(cartId)
@@ -33,9 +67,9 @@ class CartController {
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
-
   async addProductToCart(req, res) {
     const cartId = req.params.cid;
+    console.log(`ID de carrito: ${cartId}`);
     const productId = req.params.pid;
     const { quantity } = req.body;
     const userId = req.user.email;
@@ -50,6 +84,7 @@ class CartController {
 
       const carrito = await cartModel.findById(cartId);
       if (!carrito) {
+        console.log(`Carrito no encontrado con ID ${cartId}`);
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 

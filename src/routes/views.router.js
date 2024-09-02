@@ -7,6 +7,7 @@ const viewsController = new ViewsController();
 const router = Router();
 
 router.get("/", viewsController.home);
+router.get("/adminUsers", authorize("admin"), viewsController.adminUsers);
 router.get(
   "/realtimeproducts",
   authorize(["admin", "premium"]),

@@ -26,7 +26,7 @@ class EmailManager {
                     <p>Número de orden: <strong>${ticket.code}</strong></p>
                     <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
                     <p>Saludos,</p>
-                    <p>El equipo de coder Ecommerse</p>
+                    <p>El equipo de La Pastelería</p>
                 `,
       };
       await this.transporter.sendMail(mailOptions);
@@ -51,13 +51,37 @@ class EmailManager {
                     <a href="http://localhost:8080/password">Restablecer Contraseña</a>
                     <p>Si no solicitaste este cambio, por favor ignora este correo.</p>
                     <p>Saludos,</p>
-                    <p>El equipo de Bolt</p>
+                    <p>El equipo de La Pastelería</p>
                 `,
       };
       await this.transporter.sendMail(mailOptions);
     } catch (error) {
       console.log(
         "Error al enviar el correo de restablecimiento de contraseña",
+        error
+      );
+    }
+  }
+
+  async enviarCorreoEliminacionCuenta(email, first_name) {
+    try {
+      const mailOptions = {
+        from: "sofianavasd@gmail.com",
+        to: email,
+        subject: "Cuenta Eliminada por Inactividad",
+        html: `
+              <h1>Tu Cuenta ha sido Eliminada</h1>
+              <p>Hola ${first_name},</p>
+              <p>Debido a la inactividad de tu cuenta durante los últimos días, hemos procedido a eliminarla de nuestro sistema.</p>
+              <p>Si tienes alguna pregunta o crees que esto ha sido un error, por favor contáctanos.</p>
+              <p>Saludos,</p>
+              <p>El equipo de la Pastelería</p>
+            `,
+      };
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error(
+        "Error al enviar el correo de eliminación de cuenta",
         error
       );
     }

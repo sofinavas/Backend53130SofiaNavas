@@ -1,12 +1,6 @@
 import dotenv from "dotenv";
 
-import program from "../utils.js";
-
-const { mode } = program.opts();
-
-dotenv.config({
-  path: mode === "produccion" ? "./.env.produccion" : "./.env.desarrollo",
-});
+dotenv.config();
 
 const configObject = {
   PORT: process.env.PORT,

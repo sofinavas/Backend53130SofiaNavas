@@ -14,8 +14,10 @@
                 <p class="card-text">{{description}}</p>
                 <p class="card-text">Price: ${{price}}</p>
                 <form action="/api/carts/{{../cartId}}/product/{{id}}" method="POST">
-                    <button class="btnMios" type="submit">Agregar al Carrito</button>
-                </form>
+  <label for="quantity">Cantidad:</label>
+  <input type="number" id="quantity" name="quantity" value="1" min="1" required>
+  <button class="btnMios" type="submit">Agregar al Carrito</button>
+</form>
             </div>
         </div>
         {{/each}}

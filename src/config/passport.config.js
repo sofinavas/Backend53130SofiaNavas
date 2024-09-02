@@ -28,7 +28,7 @@ const initializePassport = () => {
           const passwordHash = await bcrypt.hash(password, 10);
 
           const role =
-            email === "admin@admin.com" || email === "sofianavasd@gmail.com"
+            email === configObject.admin01 || email === configObject.admin02
               ? "admin"
               : "user";
 
