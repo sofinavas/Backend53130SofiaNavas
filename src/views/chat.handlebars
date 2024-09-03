@@ -1,4 +1,4 @@
-<!-- Contenedor principal del chat -->
+{{! <!-- Contenedor principal del chat -->
 <div id="chat-container">
 
   <!-- Encabezado del chat -->
@@ -49,4 +49,42 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <!-- Incluye el script del chat -->
+<script src="js/chat.js"></script> }}
+<div id="chat-container">
+
+  <div id="chat-header">
+    <h4>Chat</h4>
+    <h5 id="nombreusuario">Nombre de usuario</h5>
+  </div>
+
+  <div id="chat-messages">
+    <div>
+      <div>
+        <div>Conectado</div>
+      </div>
+      <div id="chat"></div>
+    </div>
+  </div>
+
+  <form id="formulario">
+    <input
+      type="text"
+      name="mensaje"
+      id="mensaje"
+      placeholder="Escriba su mensaje"
+    />
+
+    <div>
+      <button id="sendMessage">Enviar</button>
+      <button id="clearChat">Borrar Conversación</button>
+    </div>
+  </form>
+</div>
+
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="js/chat.js"></script>

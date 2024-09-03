@@ -1,138 +1,160 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap");
 
+/* Variables globales */
+:root {
+  --clr-main: #e0bc88;
+  --clr-main-dark: #6e4914;
+  --clr-white-transparent: rgba(248, 244, 244, 0.8);
+  --clr-white-transparent-more: rgba(248, 244, 244, 0.9);
+  --clr-gray-light: rgb(117, 117, 117);
+  --clr-gray-: rgb(58, 58, 58);
+  --clr-gray-dark: rgb(29, 28, 28);
+  --clr-fucsia: #c34262;
+}
+/* Estilos generales */
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto", sans-serif; /* O la fuente que elijas */
+  background-color: var(--clr-main-dark);
+  color: var(--clr-white-transparent);
 }
 
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Estilos para los productos */
+.product-card {
+  background-color: var(--clr-white-transparent);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  margin-bottom: 10px;
+}
+
+.product-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--clr-fucsia);
+}
+
+/* Estilos para el botón "Ver más" (opcional) */
+.see-more-button {
+  background-color: var(--clr-fucsia);
+  color: var(--clr-white-transparent);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 /*HEADER*/
-
-.tamLogo {
-  width: 150px;
-}
-
-.fuentesNav {
-  font-size: 1.5rem;
+nav {
+  background-color: var(--clr-main-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
 }
 
-.encabezado {
-  /* background-color: bisque; */
-  border-top: solid 20px #c1101a;
-  /* border-bottom: solid 1px #c1101a; */
-  margin-bottom: 30px;
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
 nav li a {
-  text-transform: uppercase;
+  color: var(--clr-white-transparent);
   text-decoration: none;
-  margin: 15px;
-  color: gray;
-  border-left: 1px solid red;
-  border-right: 1px solid red;
-  padding: 0 15px;
+  padding: 10px 15px;
+  border-radius: 5px;
 }
 
-a:hover {
-  background-color: #c1101a;
-  color: #fafafa;
+nav li a:hover {
+  background-color: var(--clr-fucsia);
+  color: var(--clr-white-transparent);
 }
 
-/* PRODUCTOS */
-
-.tituloProductos {
-  background-color: #c1101a;
-  color: #fafafa;
-  text-align: center;
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 20px;
-}
-
-.tituloProductos h2 {
-  font-size: 35px;
-}
-
-/*CARDS*/
-
-.colorBtn {
-  background-color: #c1101a;
-  color: #fafafa;
-  font-size: 18px;
-}
-
-.colorBtn:hover {
-  background-color: red;
-  color: #fafafa;
-}
-
-/*Cards*/
-
-.card-img-top {
-  height: 200px;
-  /* Ajusta la altura deseada */
-  object-fit: cover;
-  object-position: center top;
+nav li a[aria-current="page"]:hover {
+  background-color: var(--clr-fucsia);
+  color: var(--clr-white-transparent);
 }
 
 /* Estilos del formulario de inicio de sesión */
-h1 {
-  text-align: center;
+/* Estilos generales */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--clr-main-dark);
+  color: var(--clr-white-transparent);
 }
 
-.formulario {
-  max-width: 500px;
-  margin: 0 auto;
+/* Estilos para el formulario */
+form {
+  background-color: var(--clr-white-transparent);
   padding: 20px;
-  background-color: #f2f2f2;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  width: 400px;
 }
 
 label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
+  margin-bottom: 5px;
 }
 
-.inputMessi {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 20px;
-  border: none;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.btnMios {
+input {
   width: 100%;
   padding: 10px;
-  background-color: #c1101a;
-  color: #fff;
-  border: none;
+  border: 1px solid var(--clr-gray-light);
   border-radius: 5px;
-  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+button {
+  background-color: var(--clr-fucsia);
+  color: var(--clr-white-transparent);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
+  width: 100%;
 }
 
-.btnMios:hover {
-  background-color: #ff1f33;
-}
-
-i {
-  font-size: 35px;
-}
-
-.grupo-btn {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.noSub {
-  text-decoration: none;
+p {
+  margin-bottom: 10px;
   text-align: center;
 }
 
-.formulario span {
-  font-weight: bold;
+p a {
+  color: var(--clr-fucsia);
+  text-decoration: none;
+}
+
+/* Estilos para el enlace de GitHub */
+.github-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
 }

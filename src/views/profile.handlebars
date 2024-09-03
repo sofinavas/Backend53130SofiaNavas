@@ -15,7 +15,7 @@
 
 {{! Con CSS }}
 
-<style>
+{{!-- <style>
   h1 { text-align: center; margin-top: 20px; } .profile-card { max-width: 400px;
   margin: 0 auto; padding: 20px; background-color: #f2f2f2; border-radius: 5px;
   text-align: center; } .profile-card p { margin-bottom: 10px; } .profile-card
@@ -42,4 +42,11 @@
     <a class="btnMios" href="/chat">Chat en vivo</a>
     <a class="btnMios" href="/products">Tienda</a>
   {{/if}}
-</div>
+</div> --}}
+<h1>ya estas logeado</h1>
+
+<a href="/api/sessions/logout">Logout</a>
+
+{{#if isAdmin}}
+  <a href="/adminUsers">Ir al panel de administración</a>
+{{/if}}

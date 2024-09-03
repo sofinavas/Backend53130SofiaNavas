@@ -1,4 +1,25 @@
-<h1>La Pastelería</h1>
+<!-- Encabezado principal -->
+<h1>Nuestros Productos</h1>
+
 <div>
-  {{#each products}}{{/each}}
+  <div class="product-card">
+    {{#each listadeproductos}}
+      <div class="product-card">
+        <div class="product-image">
+          <img src="{{this.thumbnail}}" alt="{{this.title}}" />
+        </div>
+        <div class="product-details">
+          <h5 class="product-title">{{this.title}}</h5>
+          <p class="product-description">{{this.description}}</p>
+          <p class="product-price">Precio: ${{this.price}}</p>
+        </div>
+      </div>
+      <!-- Fin de cada producto -->
+    {{/each}}
+  </div>
 </div>
+
+<script>
+  window.onload = function() { var user = '{{user}}'; if (user) {
+  alert(`Bienvenido al sitio web: ${user}!`); } };
+</script>

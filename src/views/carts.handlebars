@@ -13,7 +13,7 @@
   </div>
 {{/each}}
 
-<div class="total" id="total-container" style="display: none;">
+<div class="total" id="total-container">
   <h3>Total de la Compra:</h3>
   <p id="total-amount">${{calculateTotal products}}</p>
   <form
@@ -35,8 +35,8 @@
   document.getElementById('empty-message');
   document.querySelectorAll('.delete-product').forEach(button => {
   button.addEventListener('click', function() { const productId =
-  this.dataset.productId; fetch(`/api/carts/${cartId}/products/${productId}`, {
-  method: 'DELETE', headers: { 'Content-Type': 'application/json' } })
+  this.dataset.productId; fetch(`/api/carts/${cartId}/products/${productId}`,
+  {method: 'DELETE', headers: { 'Content-Type': 'application/json' } })
   .then(response => { if (response.ok) { const productDiv =
   document.querySelector(`.product[data-product-id="${productId}"]`); if
   (productDiv) { productDiv.remove(); updateTotal(); checkEmptyCart(); } } else
@@ -45,12 +45,12 @@
   0; document.querySelectorAll('.product').forEach(product => { const quantity =
   parseInt(product.querySelector('p:nth-child(2)').textContent.split(': ')[1]);
   const price =
-  parseFloat(product.querySelector('p:nth-child(3)').textContent.split(':
-  $')[1]); total += quantity * price; }); totalAmountElement.textContent =
-  `$${total.toFixed(2)}`; } function checkEmptyCart() { const hasProducts = --}
+  parseFloat(product.querySelector('p:nth-child(3)').textContent.split(':$')[1]);
+  total += quantity * price; }); totalAmountElement.textContent
+  =`$${total.toFixed(2)}`; } function checkEmptyCart() { const hasProducts =
   document.querySelectorAll('.product').length > 0; if (hasProducts) {
   totalContainer.style.display = 'block'; purchaseForm.style.display = 'block';
   emptyMessage.style.display = 'none'; } else { totalContainer.style.display =
-  'none'; purchaseForm.style.display = 'none'; emptyMessage.style.display =
-  'block'; } } updateTotal(); checkEmptyCart(); });
+  'none'; purchaseForm.style.display = 'none'; emptyMessage.style.display
+  ='block'; } } updateTotal(); checkEmptyCart(); });
 </script>

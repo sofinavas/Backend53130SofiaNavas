@@ -1,37 +1,63 @@
-<div class="d-flex justify-content-center align-items-center">
-  <h1 class="text-center">Productos</h1>
-  <a href="/carts/{{cartId}}" class="ms-5">
-    <i class="bi bi-cart cart-icon"></i>
-  </a>
-</div>
-<div class="container">
-    <div class="row">
-        {{#each products}}
-        <div class="card col-xl-4 col-md-6 col-sm-12">
-            <img src="{{img}}" alt="" class="card-img-top">
-            <div class="card-body">
-                <h2 class="card-title">{{title}}</h2>
-                <p class="card-text">{{description}}</p>
-                <p class="card-text">Price: ${{price}}</p>
-                <form action="/api/carts/{{../cartId}}/product/{{id}}" method="POST">
-  <label for="quantity">Cantidad:</label>
-  <input type="number" id="quantity" name="quantity" value="1" min="1" required>
-  <button class="btnMios" type="submit">Agregar al Carrito</button>
-</form>
-            </div>
-        </div>
-        {{/each}}
+<h1>PRODUCTOS</h1>
+
+
+<a href="/carts/{{cartId}}">Ir al Carrito</a>
+
+<div>
+  {{#each products}}
+    <div>
+      <h2>{{this.title}}</h2>
+      <p>{{this.description}}</p>
+      <p>Categoría: {{this.category}}</p>
+      <p>${{this.price}}</p>
+      <form id="form-{{this._id}}" action="/api/carts/{{../cartId}}/product/{{this._id}}" method="POST">
+        <label for="quantity-{{this._id}}">Cantidad</label>
+        <input type="number" id="quantity-{{this._id}}" name="quantity" value="1" min="1" required>
+        <button type="submit">Agregar al Carrito</button>
+      </form>
     </div>
+  {{/each}}
 </div>
 
-<div class="container mt-3">
-    <div class="row text-center">
-        {{#if hasPrevPage}}
-        <a href="/products?page={{prevPage}}"> Anterior </a>
-        {{/if}}
-        {{#if hasNextPage}}
-        <a href="/products?page={{nextPage}}"> Siguiente </a>
-        {{/if}}
-        <p>Pagina {{currentPage}} de {{totalPages}} </p>
-    </div>
+<div>
+  {{#if hasPrevPage}}
+    <a href="?page={{prevPage}}&limit={{limit}}">Página Anterior</a>
+  {{/if}}
+  Página {{page}} de {{totalPages}}
+  {{#if hasNextPage}}
+    <a href="?page={{nextPage}}&limit={{limit}}">Página Siguiente</a>
+  {{/if}}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form').forEach(function(form) {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const action = form.action;
+
+        fetch(action, {
+          method: 'POST',
+          body: new URLSearchParams(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert('Error: ' + data.error);
+          } else {
+            alert('Producto agregado al carrito.');
+            const quantityInput = form.querySelector('input[name="quantity"]');
+            quantityInput.value = 1;
+            quantityInput.focus();
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al agregar el producto al carrito.');
+        });
+      });
+    });
+  });
+</script>

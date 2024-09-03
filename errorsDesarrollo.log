@@ -57,3 +57,19 @@
 2024-09-02 15:51:07 [32minfo[39m: Escuchando en http://localhost:8080
 2024-09-02 16:06:04 [32minfo[39m: Escuchando en http://localhost:8080
 2024-09-02 16:09:09 [32minfo[39m: Escuchando en http://localhost:8080
+2024-09-03 11:42:11 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 11:43:05 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 11:43:09 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 11:45:04 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 11:46:12 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 11:46:17 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 12:54:58 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 12:55:27 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 12:58:07 [32minfo[39m: Escuchando en http://localhost:8080
+2024-09-03 13:22:15 [32minfo[39m: Escuchando en http://localhost:8080
+2024-09-03 13:29:06 [32minfo[39m: Carrito creado:
+2024-09-03 13:29:06 [31merror[39m: Error al crear el carrito: Cannot read properties of undefined (reading 'json')
+2024-09-03 15:11:33 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 15:18:52 [32minfo[39m: Producto agregado al carrito 66c86d7289c14ae5d91e274a
+2024-09-03 15:32:55 [32minfo[39m: Compra completada con éxito.
+2024-09-03 15:33:26 [31merror[39m: Error al realizar la compra: No hay suficiente stock

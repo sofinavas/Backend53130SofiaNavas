@@ -34,6 +34,10 @@ const schema = new mongoose.Schema({
     token: String,
     expire: Date,
   },
+  lastLogin: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const UserModel = mongoose.model("user", schema);
